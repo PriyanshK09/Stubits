@@ -15,6 +15,11 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false)
+  }, [])
+
   return (
     <header className={`header ${isScrolled ? "scrolled" : ""}`}>
       <div className="header-content">
@@ -36,16 +41,16 @@ const Header = () => {
         </button>
 
         <nav className={`nav-links ${isMobileMenuOpen ? "open" : ""}`}>
-          <Link to="/" className="nav-link">
+          <Link to="/" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>
             Home
           </Link>
-          <Link to="/about" className="nav-link">
+          <Link to="/about" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>
             About
           </Link>
-          <Link to="/soon" className="nav-link">
+          <Link to="/soon" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>
             Coming Soon
           </Link>
-          <a href="#early-access" className="nav-link highlight">
+          <a href="#early-access" className="nav-link highlight" onClick={() => setIsMobileMenuOpen(false)}>
             Get Early Access
           </a>
         </nav>
