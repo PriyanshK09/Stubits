@@ -22,9 +22,9 @@ const Footer = () => {
 
         <div className="footer-section">
           <h3>Quick Links</h3>
-          <a href="#privacy">Privacy Policy</a>
-          <a href="#terms">Terms of Service</a>
-          <a href="#contact">Contact Us</a>
+          <a href="*">Privacy Policy</a>
+          <a href="*">Terms of Service</a>
+          <a href="*">Contact Us</a>
         </div>
 
         <div className="footer-section newsletter">
