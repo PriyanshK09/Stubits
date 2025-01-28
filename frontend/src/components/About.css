@@ -1,0 +1,121 @@
+.about-container {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    padding: 120px 24px 80px;
+    background-color: #0a0a0a;
+    color: white;
+  }
+  
+  .background-effects {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  
+  .gradient-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 20%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(121, 40, 202, 0.15) 0%, transparent 50%);
+    filter: blur(120px);
+  }
+  
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+    mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+  }
+  
+  .content {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  
+  .content.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .about-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .gradient-text {
+    background: linear-gradient(45deg, #9333ea, #7928ca);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .about-section {
+    max-width: 800px;
+    margin: 0 auto 4rem;
+  }
+  
+  .about-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    color: #a0a0a0;
+  }
+  
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+  
+  .feature-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(147, 51, 234, 0.2);
+  }
+  
+  .feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #9333ea;
+  }
+  
+  .feature-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .feature-card p {
+    font-size: 0.9rem;
+    color: #a0a0a0;
+  }
+  
+  @media (max-width: 768px) {
+    .about-container {
+      padding: 100px 16px 60px;
+    }
+  
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  
