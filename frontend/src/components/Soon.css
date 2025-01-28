@@ -121,6 +121,47 @@
   color: #9333ea;
   line-height: 1;
   margin-bottom: 0.5rem;
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  height: 1.2em;
+}
+
+.countdown-number {
+  display: inline-block;
+  transform: translateY(0);
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.countdown-value::before,
+.countdown-value::after {
+  content: attr(data-value);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.countdown-value::before {
+  transform: translateY(-100%);
+}
+
+.countdown-value::after {
+  transform: translateY(100%);
+}
+
+.countdown-value[data-value="0"] .countdown-number,
+.countdown-value[data-value="0"]::before {
+  transform: translateY(100%);
+}
+
+.countdown-value[data-value="0"]::after {
+  transform: translateY(0);
 }
 
 .countdown-label {
@@ -193,24 +234,37 @@
 .feature-item {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.75rem;
   background: rgba(20, 20, 20, 0.95);
   padding: 0.875rem 1.5rem;
-  border-radius: 12px;
+  border-radius: 12px;  
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   color: #fff;
   font-size: 1rem;
   transition: all 0.3s ease;
+  height: 3.5rem; /* Fixed height for consistency */
 }
 
-.feature-item:hover {
-  border-color: rgba(147, 51, 234, 0.3);
-  transform: translateY(-2px);
+.feature-item span {
+  display: flex;
+  align-items: center;
+  line-height: 1;
 }
 
-.feature-icon {
+/* Remove or comment out the old selector */
+/* .feature-icon {
+  ...
+} */
+
+.soon-feature-icon {
   color: #9333ea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
 }
 
 @media (max-width: 768px) {
@@ -254,4 +308,3 @@
     padding: 1.25rem;
   }
 }
-

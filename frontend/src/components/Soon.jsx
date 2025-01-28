@@ -21,10 +21,7 @@ import "./Soon.css"
 
 const Soon = () => {
   const [isLoading, setIsLoading] = useState(true)
-  const [days, setDays] = useState(0)
-  const [hours, setHours] = useState(0)
-  const [minutes, setMinutes] = useState(0)
-  const [seconds, setSeconds] = useState(0)
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
   const [email, setEmail] = useState("")
   const [isVisible, setIsVisible] = useState(false)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
@@ -43,11 +40,7 @@ const Soon = () => {
       const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60))
       const s = Math.floor((difference % (1000 * 60)) / 1000)
 
-      setDays(d)
-      setHours(h)
-      setMinutes(m)
-      setSeconds(s)
-      
+      setTimeLeft({ days: d, hours: h, minutes: m, seconds: s })
       setIsLoading(false)
     }
 
@@ -126,15 +119,17 @@ const Soon = () => {
 
         <p className="soon-subtitle">Get ready to revolutionize your study experience with Stubits!</p>
 
-        <div className={`countdown-container ${isLoading ? 'loading' : ''}`}>
+        <div className={`countdown-container ${isLoading ? "loading" : ""}`}>
           {[
-            { value: days, label: "Days" },
-            { value: hours, label: "Hours" },
-            { value: minutes, label: "Minutes" },
-            { value: seconds, label: "Seconds" },
+            { value: timeLeft.days, label: "Days" },
+            { value: timeLeft.hours, label: "Hours" },
+            { value: timeLeft.minutes, label: "Minutes" },
+            { value: timeLeft.seconds, label: "Seconds" },
           ].map((item, index) => (
             <div key={index} className="countdown-item">
-              <span className="countdown-value">{item.value}</span>
+              <span className="countdown-value" data-value={item.value}>
+                <span className="countdown-number">{item.value}</span>
+              </span>
               <span className="countdown-label">{item.label}</span>
             </div>
           ))}
@@ -164,7 +159,7 @@ const Soon = () => {
             { icon: Rocket, text: "Accelerated Progress" },
           ].map((feature, index) => (
             <div key={index} className="feature-item">
-              <feature.icon className="feature-icon" />
+              <feature.icon size={20} className="soon-feature-icon" />
               <span>{feature.text}</span>
             </div>
           ))}
