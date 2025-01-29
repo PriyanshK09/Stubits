@@ -45,4 +45,31 @@ router.post('/subscribe', async (req, res) => {
   }
 });
 
+// New GET route for subscribers list
+router.get('/subscribers', async (req, res) => {
+  try {
+    const { password } = req.query;
+    
+    // Check admin password
+    if (!password || password !== process.env.ADMIN_PASSWORD) {
+      return res.status(401).json({ 
+        message: 'Unauthorized access' 
+      });
+    }
+
+    // Fetch subscribers sorted by newest first
+    const subscribers = await Subscriber.find()
+      .sort({ subscribedAt: -1 })
+      .select('email subscribedAt _id');
+
+    res.status(200).json(subscribers);
+
+  } catch (error) {
+    console.error('Error fetching subscribers:', error);
+    res.status(500).json({ 
+      message: 'Failed to fetch subscribers' 
+    });
+  }
+});
+
 module.exports = router;
