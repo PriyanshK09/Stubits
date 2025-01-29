@@ -25,6 +25,7 @@ const Soon = () => {
   const [email, setEmail] = useState("")
   const [isVisible, setIsVisible] = useState(false)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [message, setMessage] = useState({ text: '', type: '' });
   const containerRef = useRef(null)
 
   useEffect(() => {
@@ -61,11 +62,26 @@ const Soon = () => {
     }
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log("Email submitted:", email)
-    setEmail("")
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+  
+      const data = await response.json();
+      setMessage({ text: data.message, type: response.ok ? 'success' : 'error' });
+      if (response.ok) setEmail('');
+    } catch (error) {
+      setMessage({ text: 'Connection failed', type: 'error' });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const floatingIcons = [
     { Icon: Brain, delay: 0, position: { top: "15%", left: "10%" } },
@@ -144,12 +160,18 @@ const Soon = () => {
               placeholder="Enter your email for early access"
               required
               className="email-input"
+              disabled={isLoading}
             />
-            <button type="submit" className="submit-button">
-              Notify Me
+            <button type="submit" className="submit-button" disabled={isLoading}>
+              {isLoading ? 'Sending...' : 'Notify Me'}
               <Bell className="button-icon" />
             </button>
           </div>
+          {message.text && (
+            <div className={`message ${message.type}`}>
+              {message.text}
+            </div>
+          )}
         </form>
 
         <div className="features-preview">

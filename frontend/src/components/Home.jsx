@@ -14,6 +14,7 @@ import {
   Coffee,
   Bookmark,
   FileText,
+  Bell,
 } from "lucide-react"
 import "./Home.css"
 
@@ -21,6 +22,8 @@ const Home = () => {
   const [email, setEmail] = useState("")
   const [isVisible, setIsVisible] = useState(false)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState({ text: '', type: '' });
   const containerRef = useRef(null)
 
   useEffect(() => {
@@ -37,11 +40,26 @@ const Home = () => {
     }
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    setEmail("")
-    alert("Thanks for your interest! We'll keep you posted.")
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await response.json();
+      setMessage({ text: data.message, type: response.ok ? 'success' : 'error' });
+      if (response.ok) setEmail('');
+    } catch (error) {
+      setMessage({ text: 'Connection failed', type: 'error' });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const floatingIcons = [
     { Icon: Book, delay: 0, position: { top: "15%", left: "10%" } },
@@ -95,7 +113,7 @@ const Home = () => {
           </h1>
           <p className="hero-subtitle">The future of collaborative learning is coming to your screens.</p>
 
-          <form onSubmit={handleSubmit} className="email-form">
+          <form onSubmit={handleSubmit} className="notify-form">
             <div className="input-group">
               <input
                 type="email"
@@ -104,26 +122,18 @@ const Home = () => {
                 placeholder="Enter your email for early access"
                 required
                 className="email-input"
+                disabled={isLoading}
               />
-              <button type="submit" className="submit-button">
-                Get Early Access
-                <span className="button-glow"></span>
+              <button type="submit" className="submit-button" disabled={isLoading}>
+                {isLoading ? 'Sending...' : 'Notify Me'}
+                <Bell className="button-icon" />
               </button>
             </div>
-            <div className="social-proof">
-              <div className="avatars">
-                <div className="avatar" style={{ background: "linear-gradient(45deg, #9333ea, #7928ca)" }}>
-                  👩‍🎓
-                </div>
-                <div className="avatar" style={{ background: "linear-gradient(45deg, #9333ea, #7928ca)" }}>
-                  👨‍🎓
-                </div>
-                <div className="avatar" style={{ background: "linear-gradient(45deg, #9333ea, #7928ca)" }}>
-                  🎓
-                </div>
+            {message.text && (
+              <div className={`message ${message.type}`}>
+                {message.text}
               </div>
-              <p className="social-proof-text">Join 1000+ students waiting in line</p>
-            </div>
+            )}
           </form>
         </section>
 
@@ -156,4 +166,3 @@ const Home = () => {
 }
 
 export default Home
-
