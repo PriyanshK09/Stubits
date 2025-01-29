@@ -5,8 +5,8 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false,
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
+    user: process.env.EMAIL_USER, // Still your Gmail address
+    pass: process.env.EMAIL_PASS  // Your Gmail app password
   },
   tls: {
     ciphers: 'SSLv3'
@@ -24,7 +24,11 @@ transporter.verify(function (error, success) {
 
 const sendThankYouEmail = async (email) => {
     const mailOptions = {
-      from: `"Stubits" <${process.env.EMAIL_USER}>`,
+      from: {
+        name: 'Stubits',
+        address: 'welcome@stubits.com' // Your custom domain email
+      },
+      replyTo: 'welcome@stubits.com',  // Custom domain for replies
       to: email,
       subject: 'Welcome to the Future of Learning! 🚀',
       html: `
