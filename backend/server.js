@@ -17,6 +17,20 @@ app.use((err, req, res, next) => {
 app.use(cors());
 app.use(express.json());
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
+// Redirect root to main website
+app.get('/', (req, res) => {
+  res.redirect(301, 'https://stubits.com');
+});
+
 // Connect to MongoDB
 connectDB();
 
