@@ -8,14 +8,14 @@ const Footer = () => {
         <div className="footer-section">
           <h3>Stay Connected</h3>
           <div className="social-links">
-            <a href="https://twitter.com/stubits" className="social-link">
+            <a href="https://x.com/StubitsOfficial" className="social-link">
               🐦 Twitter
             </a>
-            <a href="https://instagram.com/stubits" className="social-link">
+            <a href="http://instagram.com/stubitsofficial" className="social-link">
               📸 Instagram
             </a>
-            <a href="https://linkedin.com/company/stubits" className="social-link">
-              💼 LinkedIn
+            <a href="https://discord.gg/TpfNFRWnhd" className="social-link">
+              💼 Discord
             </a>
           </div>
         </div>
@@ -31,7 +31,10 @@ const Footer = () => {
           <h3>Join the Community</h3>
           <p>Be part of something epic!</p>
           <div className="footer-cta">
-            <button className="discord-btn">
+            <button 
+              className="discord-btn"
+              onClick={() => window.open('https://discord.gg/TpfNFRWnhd', '_blank')}
+            >
               <span>Join Discord</span>
               <span className="emoji">🎮</span>
             </button>
