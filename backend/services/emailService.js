@@ -66,16 +66,16 @@ const sendThankYouEmail = async (email) => {
                     </div>
   
                     <!-- CTA Button -->
-                    <a href="https://stubits.vercel.app" style="display: inline-block; background: linear-gradient(45deg, #9333ea, #7928ca); color: white; text-decoration: none; padding: 16px 32px; border-radius: 12px; font-weight: bold; margin: 24px 0;">Visit Stubits</a>
+                    <a href="https://stubits.com/" style="display: inline-block; background: linear-gradient(45deg, #9333ea, #7928ca); color: white; text-decoration: none; padding: 16px 32px; border-radius: 12px; font-weight: bold; margin: 24px 0;">Visit Stubits</a>
                   </div>
   
                   <!-- Social Links -->
                   <div style="margin-top: 32px;">
                     <p style="color: #666666; font-size: 14px; margin-bottom: 16px;">Connect with us:</p>
                     <div>
-                      <a href="https://twitter.com/stubits" style="color: #9333ea; text-decoration: none; margin: 0 12px;">Twitter</a>
-                      <a href="https://instagram.com/stubits" style="color: #9333ea; text-decoration: none; margin: 0 12px;">Instagram</a>
-                      <a href="https://linkedin.com/company/stubits" style="color: #9333ea; text-decoration: none; margin: 0 12px;">LinkedIn</a>
+                      <a href="https://x.com/StubitsOfficial" style="color: #9333ea; text-decoration: none; margin: 0 12px;">Twitter</a>
+                      <a href="http://instagram.com/stubitsofficial" style="color: #9333ea; text-decoration: none; margin: 0 12px;">Instagram</a>
+                      <a href="https://discord.gg/TpfNFRWnhd" style="color: #9333ea; text-decoration: none; margin: 0 12px;">Discord</a>
                     </div>
                   </div>
   
