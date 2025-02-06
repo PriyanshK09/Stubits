@@ -1,10 +1,11 @@
 // frontend/src/components/AdminDashboard.jsx
 import React, { useState } from 'react';
-import { Book, Upload, Settings, Users, LogOut } from 'lucide-react';
+import { Book, Upload, Settings as SettingsIcon, Users, LogOut } from 'lucide-react';
 import './AdminDashboard.css';
 import ManageNotes from './ManageNotes';
 import Subscribers from './Subscribers';
 import UploadMaterial from './UploadMaterial';
+import SettingsComponent from './Settings';
 
 const AdminDashboard = ({ setIsAdmin }) => {
   const [activeTab, setActiveTab] = useState('notes');
@@ -93,7 +94,7 @@ const AdminDashboard = ({ setIsAdmin }) => {
             className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`}
             onClick={() => setActiveTab('settings')}
           >
-            <Settings />
+            <SettingsIcon />
             <span>Settings</span>
           </button>
           <button
@@ -121,7 +122,19 @@ const AdminDashboard = ({ setIsAdmin }) => {
             setEditData={setEditData}
           />
         )}
-        {activeTab === 'subscribers' && <Subscribers isAdminAuthenticated={true} adminPassword={password} />}
+        {activeTab === 'subscribers' && (
+          <Subscribers 
+            isAdminAuthenticated={true} 
+            adminPassword={password} 
+          />
+        )}
+        {activeTab === 'settings' && (
+          <div className="settings-wrapper">
+            <SettingsComponent 
+              admintoken={password} 
+            />
+          </div>
+        )}
       </main>
     </div>
   );

@@ -123,3 +123,16 @@
   background: var(--gradient-secondary);
   transform: translateY(-2px);
 }
+
+.settings-wrapper {
+  padding-top: 3.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Update admin-main styles */
+.admin-main {
+  padding: 2rem;
+  overflow-y: auto;
+}

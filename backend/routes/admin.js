@@ -30,6 +30,24 @@ router.post('/verify', async (req, res) => {
   }
 });
 
+// Add change password route
+router.post('/change-password', checkAdmin, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    
+    if (currentPassword !== process.env.ADMIN_PASSWORD) {
+      return res.status(401).json({ message: 'Current password is incorrect' });
+    }
+
+    // Update password in env (in production, use proper DB)
+    process.env.ADMIN_PASSWORD = newPassword;
+    
+    res.json({ message: 'Password updated successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Get all materials
 router.get('/materials', checkAdmin, async (req, res) => {
   try {
