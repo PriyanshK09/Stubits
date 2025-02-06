@@ -1,12 +1,12 @@
 // frontend/src/components/AdminDashboard.jsx
 import React, { useState } from 'react';
-import { Book, Upload, Settings, Users } from 'lucide-react';
+import { Book, Upload, Settings, Users, LogOut } from 'lucide-react';
 import './AdminDashboard.css';
 import ManageNotes from './ManageNotes';
 import Subscribers from './Subscribers';
 import UploadMaterial from './UploadMaterial';
 
-const AdminDashboard = () => {
+const AdminDashboard = ({ setIsAdmin }) => {
   const [activeTab, setActiveTab] = useState('notes');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
@@ -37,6 +37,13 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('adminToken');
+    setIsAuthenticated(false);
+    setIsAdmin(false);
+    window.location.href = '/';
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="admin-auth-container">
@@ -60,10 +67,6 @@ const AdminDashboard = () => {
   return (
     <div className="admin-dashboard">
       <aside className="admin-sidebar">
-        <div className="admin-logo">
-          <img src="/logo.png" alt="Stubits Admin" />
-          <span>Admin Panel</span>
-        </div>
         <nav className="admin-nav">
           <button
             className={`nav-item ${activeTab === 'notes' ? 'active' : ''}`}
@@ -92,6 +95,13 @@ const AdminDashboard = () => {
           >
             <Settings />
             <span>Settings</span>
+          </button>
+          <button
+            className="nav-item logout"
+            onClick={handleLogout}
+          >
+            <LogOut />
+            <span>Logout</span>
           </button>
         </nav>
       </aside>

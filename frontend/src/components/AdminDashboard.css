@@ -63,6 +63,17 @@
   color: white;
 }
 
+.nav-item.logout {
+  margin-top: auto;
+  border-top: 1px solid rgba(147, 51, 234, 0.2);
+  color: #ef4444;
+}
+
+.nav-item.logout:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
 .admin-auth-container {
   min-height: 100vh;
   display: grid;

@@ -24,11 +24,13 @@
   align-items: center;
 }
 
+/* Update logo-wrapper styles */
 .logo-wrapper {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   transition: transform 0.3s ease;
+  text-decoration: none; /* Add this */
 }
 
 .logo-wrapper:hover {
@@ -51,41 +53,62 @@
   letter-spacing: -0.5px;
 }
 
+.logo-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-tag {
+  padding: 0.25rem 0.75rem;
+  background: linear-gradient(45deg, rgba(147, 51, 234, 0.1), rgba(121, 40, 202, 0.1));
+  border: 1px solid rgba(147, 51, 234, 0.3);
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--purple-300);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.admin-tag:hover {
+  background: linear-gradient(45deg, rgba(147, 51, 234, 0.2), rgba(121, 40, 202, 0.2));
+  transform: translateY(-1px);
+}
+
 .nav-links {
   display: flex;
   gap: 3rem;
   align-items: center;
 }
 
+/* Update nav-link styles */
 .nav-link {
   color: #fff;
-  text-decoration: none;
+  text-decoration: none !important; /* Add !important */
   font-weight: 500;
   font-size: 1rem;
   position: relative;
   padding: 0.5rem 0;
   transition: color 0.3s ease;
+  border: none; /* Add this */
+  outline: none; /* Add this */
 }
 
+/* Remove underline effect */
 .nav-link::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: #9333ea;
-  transition: width 0.3s ease;
+  display: none;
 }
 
+/* Remove or update hover effects */
 .nav-link:hover {
   color: #9333ea;
+  transform: translateY(-1px);
+  text-decoration: none !important; /* Add this */
 }
 
-.nav-link:hover::after {
-  width: 100%;
-}
-
+/* Update highlight link styles */
 .nav-link.highlight {
   background: linear-gradient(45deg, #9333ea, #7928ca);
   padding: 0.75rem 1.5rem;
@@ -93,6 +116,7 @@
   color: white;
   font-weight: 600;
   transition: all 0.3s ease;
+  text-decoration: none !important; /* Add this */
 }
 
 .nav-link.highlight:hover {
@@ -148,4 +172,3 @@
     text-align: center;
   }
 }
-
