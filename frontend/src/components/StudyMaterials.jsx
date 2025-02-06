@@ -2,6 +2,98 @@ import { useState, useRef, useEffect } from "react"
 import { Book, Search, Filter, Sparkles, GraduationCap, Brain, BookOpen, Download, ArrowUpDown, X } from "lucide-react"
 import "./StudyMaterials.css"
 
+// Move FilterPopup and SortPopup outside main component
+const FilterPopup = ({ filters, setFilters, onApply, onClose }) => {
+  const handleClick = (e) => {
+    e.stopPropagation(); // Stop event from bubbling up
+  };
+
+  return (
+    <div className="sm-filter-popup" onClick={handleClick}>
+      <div className="sm-filter-content">
+        <div className="sm-filter-header">
+          <h3>Filters</h3>
+          <button onClick={onClose}>
+            <X />
+          </button>
+        </div>
+        
+        <div className="sm-filter-section">
+          <h4>Price Range</h4>
+          <select 
+            value={filters.priceRange}
+            onChange={(e) => setFilters({...filters, priceRange: e.target.value})}
+          >
+            <option value="all">All Prices</option>
+            <option value="0-500">Under ₹500</option>
+            <option value="500-1000">₹500 - ₹1000</option>
+            <option value="1000+">Above ₹1000</option>
+          </select>
+        </div>
+
+        <div className="sm-filter-section">
+          <h4>Subject</h4>
+          <select 
+            value={filters.subject}
+            onChange={(e) => setFilters({...filters, subject: e.target.value})}
+          >
+            <option value="all">All Subjects</option>
+            <option value="physics">Physics</option>
+            <option value="chemistry">Chemistry</option>
+            <option value="mathematics">Mathematics</option>
+            <option value="biology">Biology</option>
+          </select>
+        </div>
+
+        <button className="sm-apply-filters" onClick={onApply}>
+          Apply Filters
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const SortPopup = ({ sortBy, setSortBy, onClose }) => {
+  const handleClick = (e) => {
+    e.stopPropagation(); // Stop event from bubbling up
+  };
+
+  return (
+    <div className="sm-sort-popup" onClick={handleClick}>
+      <div className="sm-sort-content">
+        <div className="sm-sort-header">
+          <h3>Sort By</h3>
+          <button onClick={onClose}>
+            <X size={18} />
+          </button>
+        </div>
+        
+        <div className="sm-sort-options">
+          {[
+            { value: "popular", label: "Most Popular" },
+            { value: "newest", label: "Newest First" },
+            { value: "price-low", label: "Price: Low to High" },
+            { value: "price-high", label: "Price: High to Low" },
+            { value: "rating", label: "Highest Rated" }
+          ].map(option => (
+            <button
+              key={option.value}
+              className={`sm-sort-option ${sortBy === option.value ? 'active' : ''}`}
+              onClick={() => {
+                setSortBy(option.value);
+                onClose();
+              }}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Update main component
 function StudyMaterials() {
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [showFilters, setShowFilters] = useState(false)
@@ -74,9 +166,16 @@ function StudyMaterials() {
   }
 
   const handleFilterClick = (e) => {
-    e.preventDefault()
-    setShowFilters(!showFilters)
-  }
+    e.preventDefault();
+    e.stopPropagation();
+    setShowFilters(!showFilters);
+  };
+
+  const handleSortClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowSort(!showSort);
+  };
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value)
@@ -213,87 +312,6 @@ function StudyMaterials() {
     }
   }
 
-  const FilterPopup = () => (
-    <div className="sm-filter-popup" onClick={() => setShowFilters(false)}>
-      <div className="sm-filter-content" onClick={e => e.stopPropagation()}>
-        <div className="sm-filter-header">
-          <h3>Filters</h3>
-          <button onClick={() => setShowFilters(false)}><X /></button>
-        </div>
-        
-        <div className="sm-filter-section">
-          <h4>Price Range</h4>
-          <select 
-            value={filters.priceRange}
-            onChange={(e) => setFilters({...filters, priceRange: e.target.value})}
-          >
-            <option value="all">All Prices</option>
-            <option value="0-500">Under ₹500</option>
-            <option value="500-1000">₹500 - ₹1000</option>
-            <option value="1000+">Above ₹1000</option>
-          </select>
-        </div>
-
-        <div className="sm-filter-section">
-          <h4>Subject</h4>
-          <select 
-            value={filters.subject}
-            onChange={(e) => setFilters({...filters, subject: e.target.value})}
-          >
-            <option value="all">All Subjects</option>
-            <option value="physics">Physics</option>
-            <option value="chemistry">Chemistry</option>
-            <option value="mathematics">Mathematics</option>
-            <option value="biology">Biology</option>
-          </select>
-        </div>
-
-        <button className="sm-apply-filters" onClick={handleApplyFilters}>
-          Apply Filters
-        </button>
-      </div>
-    </div>
-  )
-
-  // Update SortPopup component
-  const SortPopup = () => (
-    <div className="sm-sort-popup" onClick={() => setShowSort(false)}>
-      <div className="sm-sort-content" onClick={e => e.stopPropagation()}>
-        <div className="sm-sort-header">
-          <h3>Sort By</h3>
-          <button onClick={(e) => {
-            e.preventDefault()
-            setShowSort(false)
-          }}>
-            <X size={18} />
-          </button>
-        </div>
-        
-        <div className="sm-sort-options">
-          {[
-            { value: "popular", label: "Most Popular" },
-            { value: "newest", label: "Newest First" },
-            { value: "price-low", label: "Price: Low to High" },
-            { value: "price-high", label: "Price: High to Low" },
-            { value: "rating", label: "Highest Rated" }
-          ].map(option => (
-            <button
-              key={option.value}
-              className={`sm-sort-option ${sortBy === option.value ? 'active' : ''}`}
-              onClick={(e) => {
-                e.preventDefault()
-                setSortBy(option.value)
-                setShowSort(false)
-              }}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
@@ -359,10 +377,7 @@ function StudyMaterials() {
           </button>
           <button
             className={`sm-sort-btn ${sortBy !== "popular" ? "active" : ""}`}
-            onClick={(e) => {
-              e.preventDefault();
-              setShowSort(true);
-            }}
+            onClick={handleSortClick}
           >
             <ArrowUpDown />
           </button>
@@ -414,8 +429,8 @@ function StudyMaterials() {
           <FilterPopup
             filters={filters}
             setFilters={setFilters}
-            onReset={handleFilterReset}
             onApply={handleApplyFilters}
+            onClose={() => setShowFilters(false)}
           />
         )}
 
@@ -423,7 +438,6 @@ function StudyMaterials() {
           <SortPopup
             sortBy={sortBy}
             setSortBy={setSortBy}
-            onReset={handleSortReset}
             onClose={() => setShowSort(false)}
           />
         )}
