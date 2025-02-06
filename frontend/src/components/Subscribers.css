@@ -156,8 +156,28 @@
 }
 
 .error-message {
+  background: rgba(239, 68, 68, 0.1);
   color: #ef4444;
-  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* Update container styles for admin panel */
+.subscribers-section {
+  padding: 2rem;
+  color: white;
+}
+
+.loading-state {
+  text-align: center;
+  color: #a0a0a0;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(147, 51, 234, 0.2);
 }
 
 @media (max-width: 768px) {

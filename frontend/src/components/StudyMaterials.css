@@ -787,6 +787,52 @@
   box-shadow: 0 8px 30px rgba(124, 58, 237, 0.3);
 }
 
+/* Add loading and error states */
+.sm-loading {
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-secondary);
+}
+
+.sm-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--surface-light);
+  border-top-color: var(--purple-400);
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+  animation: spin 1s linear infinite;
+}
+
+.sm-error {
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 4rem 2rem;
+  background: linear-gradient(145deg, 
+    rgba(239, 68, 68, 0.15), 
+    rgba(239, 68, 68, 0.05)
+  );
+  border-radius: 24px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.sm-error button {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--gradient-primary);
+  border: none;
+  border-radius: 100px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sm-error button:hover {
+  transform: translateY(-2px);
+}
+
 .background-effects {
   position: absolute;
   inset: 0;
@@ -1058,4 +1104,8 @@
   .sm-price {
     font-size: 1.25rem;
   }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

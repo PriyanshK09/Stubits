@@ -14,6 +14,9 @@ function StudyMaterials() {
   const [sortBy, setSortBy] = useState("popular")
   const categoriesRef = useRef(null)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [materials, setMaterials] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -27,48 +30,35 @@ function StudyMaterials() {
     };
   }, []);
 
+  useEffect(() => {
+    const fetchMaterials = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('http://localhost:5000/api/materials/');
+        const data = await response.json();
+        
+        if (response.ok) {
+          setMaterials(data);
+          setError(null);
+        } else {
+          setError('Failed to fetch materials');
+        }
+      } catch (err) {
+        setError('Failed to connect to server');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMaterials();
+  }, []);
+
   const categories = [
     { id: "all", name: "All", icon: <Book /> },
     { id: "iitjee", name: "IIT-JEE", icon: <GraduationCap /> },
     { id: "neet", name: "NEET", icon: <Brain /> },
     { id: "boards", name: "Board Exams", icon: <BookOpen /> },
     { id: "other", name: "Other Exams", icon: <Book /> },
-  ]
-
-  const materials = [
-    {
-      id: 1,
-      title: "Complete Physics Notes",
-      category: "iitjee",
-      subject: "Physics",
-      description: "Master JEE Physics with comprehensive notes and solved examples",
-      price: 499,
-      rating: 4.8,
-      students: 1200,
-      pages: 450,
-    },
-    {
-      id: 2,
-      title: "Chemistry Foundation",
-      category: "neet",
-      subject: "Chemistry",
-      description: "Essential chemistry concepts for NEET preparation",
-      price: 599,
-      rating: 4.9,
-      students: 800,
-      pages: 380,
-    },
-    {
-      id: 3,
-      title: "Mathematics Mastery",
-      category: "boards",
-      subject: "Mathematics",
-      description: "Complete mathematics guide for board exam excellence",
-      price: 399,
-      rating: 4.7,
-      students: 1500,
-      pages: 420,
-    }
   ]
 
   const scroll = (direction) => {
@@ -304,6 +294,20 @@ function StudyMaterials() {
     </div>
   )
 
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
+  const getCategoryDisplay = (category) => {
+    const displayMap = {
+      'iitjee': 'IIT-JEE',
+      'neet': 'NEET',
+      'boards': 'Boards',
+      'other': 'Other'
+    };
+    return displayMap[category] || capitalizeFirstLetter(category);
+  };
+
   const filteredMaterials = getFilteredAndSortedMaterials()
 
   return (
@@ -425,13 +429,27 @@ function StudyMaterials() {
         )}
 
         <div className="sm-materials-grid">
-          {filteredMaterials.length > 0 ? (
+          {loading ? (
+            <div className="sm-loading">
+              <div className="sm-loading-spinner"></div>
+              <p>Loading study materials...</p>
+            </div>
+          ) : error ? (
+            <div className="sm-error">
+              <p>{error}</p>
+              <button onClick={() => window.location.reload()}>
+                Try Again
+              </button>
+            </div>
+          ) : filteredMaterials.length > 0 ? (
             filteredMaterials.map((material) => (
-              <div key={material.id} className="sm-material-card">
+              <div key={material._id} className="sm-material-card">
                 <div className="sm-card-content">
                   <div className="sm-card-header">
                     <h3>{material.title}</h3>
-                    <span className="sm-category-tag">{material.subject}</span>
+                    <span className="sm-category-tag">
+                      {capitalizeFirstLetter(material.subject)}
+                    </span>
                   </div>
                   <p className="sm-card-description">{material.description}</p>
                   <div className="sm-card-stats">
@@ -441,12 +459,15 @@ function StudyMaterials() {
                     </div>
                     <div className="sm-stat">
                       <GraduationCap className="sm-stat-icon" />
-                      {material.students} Students
+                      {getCategoryDisplay(material.category)}
                     </div>
                   </div>
                   <div className="sm-card-footer">
                     <div className="sm-price">₹{material.price}</div>
-                    <button className="sm-buy-btn">
+                    <button 
+                      className="sm-buy-btn"
+                      onClick={() => window.open(material.fileUrl, '_blank')}
+                    >
                       <Download className="sm-btn-icon" />
                       Get Access
                     </button>

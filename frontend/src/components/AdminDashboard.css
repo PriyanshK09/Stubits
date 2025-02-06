@@ -1,0 +1,114 @@
+.admin-dashboard {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  margin-top: 3rem;
+}
+
+.admin-sidebar {
+  background: rgba(20, 20, 20, 0.95);
+  border-right: 1px solid rgba(147, 51, 234, 0.2);
+  padding: 2rem;
+}
+
+.admin-logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.admin-logo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+}
+
+.admin-logo span {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(45deg, #fff, #9333ea);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.admin-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-item:hover {
+  background: var(--surface-light);
+  color: var(--text-primary);
+}
+
+.nav-item.active {
+  background: var(--gradient-primary);
+  color: white;
+}
+
+.admin-auth-container {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  background-color: var(--bg-primary);
+}
+
+.admin-auth-form {
+  background: rgba(20, 20, 20, 0.95);
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  border-radius: 16px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.admin-auth-form h2 {
+  color: var(--purple-primary);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.admin-auth-form input {
+  width: 100%;
+  padding: 1rem;
+  background: var(--bg-primary);
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  border-radius: 12px;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.admin-auth-form button {
+  width: 100%;
+  padding: 1rem;
+  background: var(--gradient-primary);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.admin-auth-form button:hover {
+  background: var(--gradient-secondary);
+  transform: translateY(-2px);
+}

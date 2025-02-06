@@ -7,6 +7,7 @@ import About from "./components/About"
 import Footer from "./components/Footer"
 import Subscribers from "./components/Subscribers"
 import StudyMaterials from "./components/StudyMaterials"
+import AdminDashboard from "./components/AdminDashboard"
 import "./App.css"
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/subscribers" element={<Subscribers />} />
           <Route path="/study-materials" element={<StudyMaterials />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           {/* All other pages redirected to Soon */}
           <Route path="*" element={<Soon />} />
         </Routes>

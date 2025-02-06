@@ -5,24 +5,22 @@ const connectDB = require('./config/db');
 
 const app = express();
 
-// Enhanced error handling
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ 
-    message: 'Something went wrong! Please try again.' 
-  });
-});
-
 // Middleware
 app.use(cors());
 app.use(express.json());
 
+// Connect to MongoDB
+connectDB();
+
+// Routes
+app.use('/api', require('./routes/subscribe'));
+app.use('/api/admin', require('./routes/admin'));
+app.use('/api/materials', require('./routes/materials')); // Updated path
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime()
+    status: 'ok'
   });
 });
 
@@ -31,11 +29,13 @@ app.get('/', (req, res) => {
   res.redirect(301, 'https://stubits.com');
 });
 
-// Connect to MongoDB
-connectDB();
-
-// Routes
-app.use('/api', require('./routes/subscribe'));
+// Enhanced error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ 
+    message: 'Something went wrong! Please try again.' 
+  });
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
