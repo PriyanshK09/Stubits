@@ -14,7 +14,7 @@ const ManageNotes = ({ adminPassword, setActiveTab, setEditData }) => {
   const fetchMaterials = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/admin/materials', {
+      const response = await fetch('https://stubits.onrender.com/api/admin/materials', {
         headers: {
           'adminKey': adminPassword
         }
@@ -34,7 +34,7 @@ const ManageNotes = ({ adminPassword, setActiveTab, setEditData }) => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this material?')) {
       try {
-        const response = await fetch(`http://localhost:5000/api/admin/materials/${id}`, {
+        const response = await fetch(`https://stubits.onrender.com/api/admin/materials/${id}`, {
           method: 'DELETE',
           headers: {
             'adminKey': adminPassword

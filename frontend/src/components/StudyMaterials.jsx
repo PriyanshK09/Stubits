@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react"
 import { Book, Search, Filter, Sparkles, GraduationCap, Brain, BookOpen, Download, ArrowUpDown, X } from "lucide-react"
 import "./StudyMaterials.css"
+import PaymentGateway from "./PaymentGateway";
 
 // Move FilterPopup and SortPopup outside main component
 const FilterPopup = ({ filters, setFilters, onApply, onClose }) => {
@@ -94,7 +95,7 @@ const SortPopup = ({ sortBy, setSortBy, onClose }) => {
 };
 
 // Update main component
-function StudyMaterials() {
+const StudyMaterials = () => {
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [showFilters, setShowFilters] = useState(false)
   const [showSort, setShowSort] = useState(false)
@@ -109,6 +110,17 @@ function StudyMaterials() {
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showPayment, setShowPayment] = useState(false);
+  const [selectedMaterial, setSelectedMaterial] = useState(null);
+
+  const handlePurchase = (material) => {
+    setSelectedMaterial(material);
+    setShowPayment(true);
+  };
+
+  const handlePaymentSuccess = (fileUrl) => {
+    window.open(fileUrl, '_blank');
+  };
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -126,7 +138,7 @@ function StudyMaterials() {
     const fetchMaterials = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:5000/api/materials/');
+        const response = await fetch('https://stubits.onrender.com/api/materials/');
         const data = await response.json();
         
         if (response.ok) {
@@ -480,7 +492,7 @@ function StudyMaterials() {
                     <div className="sm-price">₹{material.price}</div>
                     <button 
                       className="sm-buy-btn"
-                      onClick={() => window.open(material.fileUrl, '_blank')}
+                      onClick={() => handlePurchase(material)}
                     >
                       <Download className="sm-btn-icon" />
                       Get Access
@@ -515,6 +527,14 @@ function StudyMaterials() {
             </div>
           )}
         </div>
+
+        {showPayment && selectedMaterial && (
+          <PaymentGateway
+            material={selectedMaterial}
+            onClose={() => setShowPayment(false)}
+            onSuccess={handlePaymentSuccess}
+          />
+        )}
 
         <section className="sm-action">
           <div className="sm-action-container">

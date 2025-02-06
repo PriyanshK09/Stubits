@@ -16,7 +16,7 @@ const AdminDashboard = ({ setIsAdmin }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/admin/verify', {
+      const response = await fetch('https://stubits.onrender.com/api/admin/verify', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
