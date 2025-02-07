@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const StudyMaterial = require('../models/StudyMaterial');
 
-router.get('/', async (req, res) => {
+router.get('/materials', async (req, res) => {
   try {
     const materials = await StudyMaterial.find()
       .sort({ createdAt: -1 })

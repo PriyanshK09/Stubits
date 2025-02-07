@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 import "./Header.css";
 
 const Header = ({ isAdmin }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showAdminTag, setShowAdminTag] = useState(false);
+  const [userName, setUserName] = useState(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -14,16 +15,16 @@ const Header = ({ isAdmin }) => {
       setIsScrolled(window.scrollY > 20);
     };
 
-    const checkAdminStatus = () => {
+    const checkAuth = () => {
       const adminToken = localStorage.getItem('adminToken');
+      const name = localStorage.getItem('userName');
       setShowAdminTag(!!adminToken);
+      setUserName(name);
     };
 
     window.addEventListener("scroll", handleScroll);
-    checkAdminStatus(); // Check on mount
-    
-    // Setup interval to check admin status
-    const interval = setInterval(checkAdminStatus, 1000);
+    checkAuth();
+    const interval = setInterval(checkAuth, 1000);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -35,6 +36,12 @@ const Header = ({ isAdmin }) => {
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('userToken');
+    localStorage.removeItem('userName');
+    setUserName(null);
+  };
 
   return (
     <header className={`header ${isScrolled ? "scrolled" : ""}`}>
@@ -77,9 +84,21 @@ const Header = ({ isAdmin }) => {
               Dashboard
             </Link>
           )}
-          <a href="#early-access" className="nav-link highlight">
-            Get Early Access
-          </a>
+          {userName ? (
+            <div className="user-menu">
+              <span className="user-name">
+                <User size={18} />
+                {userName}
+              </span>
+              <button onClick={handleLogout} className="logout-btn">
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            <Link to="/auth" className="nav-link highlight">
+              Sign In
+            </Link>
+          )}
         </nav>
       </div>
     </header>

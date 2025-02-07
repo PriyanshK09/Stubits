@@ -1,0 +1,163 @@
+/* frontend/src/components/PaymentGateway.css */
+.payment-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 5, 26, 0.95);
+  backdrop-filter: blur(12px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.payment-modal {
+  background: var(--surface-light);
+  border: 1px solid var(--purple-500);
+  border-radius: 24px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  animation: slideUp 0.3s ease;
+}
+
+.close-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  background: var(--surface-dark);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.payment-content {
+  color: var(--text-primary);
+}
+
+.payment-content h2 {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.payment-details {
+  background: rgba(147, 51, 234, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.price-tag {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--purple-400);
+  margin-top: 1rem;
+}
+
+.payment-method h4 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.upi-info {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.upi-id {
+  background: var(--surface-dark);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--purple-400);
+  font-family: monospace;
+  font-size: 1.1rem;
+}
+
+.copy-btn {
+  padding: 0.75rem 1.5rem;
+  border: 1px solid var(--purple-400);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.instruction {
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin: 1.5rem 0;
+}
+
+.payment-btn {
+  width: 100%;
+  padding: 1rem;
+  background: var(--gradient-primary);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.payment-status {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.success-icon {
+  color: #22c55e;
+  margin-bottom: 1rem;
+}
+
+.error-icon {
+  color: #ef4444;
+  margin-bottom: 1rem;
+}
+
+.access-btn, .retry-btn {
+  margin-top: 1.5rem;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.access-btn {
+  background: var(--gradient-primary);
+  border: none;
+  color: white;
+}
+
+.retry-btn {
+  background: transparent;
+  border: 1px solid var(--purple-400);
+  color: var(--text-primary);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -8,6 +8,8 @@ import Footer from "./components/Footer"
 import Subscribers from "./components/Subscribers"
 import StudyMaterials from "./components/StudyMaterials"
 import AdminDashboard from "./components/AdminDashboard"
+import AuthPage from "./components/AuthPage"
+import AuthSuccess from './components/AuthSuccess';
 import "./App.css"
 
 function App() {
@@ -42,6 +44,8 @@ function App() {
           <Route path="/subscribers" element={<Subscribers />} />
           <Route path="/study-materials" element={<StudyMaterials />} />
           <Route path="/admin" element={<AdminDashboard setIsAdmin={setIsAdmin} />} />
+          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/auth-success" element={<AuthSuccess />} />
           {/* All other pages redirected to Soon */}
           <Route path="*" element={<Soon />} />
         </Routes>

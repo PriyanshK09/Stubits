@@ -18,7 +18,7 @@ const Settings = ({ admintoken }) => { // Changed from adminToken
 
     setLoading(true);
     try {
-      const response = await fetch('https://stubits.onrender.com/api/admin/change-password', {
+      const response = await fetch('http://localhost:5000/api/admin/change-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

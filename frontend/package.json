@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "cra-template": "1.2.0",
+    "framer-motion": "^12.4.0",
     "lucide-react": "^0.474.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

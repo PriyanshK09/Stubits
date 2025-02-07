@@ -1,0 +1,12 @@
+.auth-success {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+}
+
+.loading {
+  color: var(--text-primary);
+  font-size: 1.2rem;
+}

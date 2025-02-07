@@ -26,8 +26,8 @@ const UploadMaterial = ({ adminPassword, editData, setEditData }) => {
     setLoading(true);
     try {
       const url = editData 
-        ? `https://stubits.onrender.com/api/admin/materials/${editData._id}`
-        : 'https://stubits.onrender.com/api/admin/materials';
+        ? `http://localhost:5000/api/admin/materials/${editData._id}`
+        : 'http://localhost:5000/api/admin/materials';
       
       const method = editData ? 'PUT' : 'POST';
       

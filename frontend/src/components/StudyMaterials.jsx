@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react"
 import { Book, Search, Filter, Sparkles, GraduationCap, Brain, BookOpen, Download, ArrowUpDown, X } from "lucide-react"
 import "./StudyMaterials.css"
 import PaymentGateway from "./PaymentGateway";
+import AuthPage from "./AuthPage";
 
 // Move FilterPopup and SortPopup outside main component
 const FilterPopup = ({ filters, setFilters, onApply, onClose }) => {
@@ -112,14 +113,36 @@ const StudyMaterials = () => {
   const [error, setError] = useState(null);
   const [showPayment, setShowPayment] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [redirectAfterAuth, setRedirectAfterAuth] = useState(null);
 
   const handlePurchase = (material) => {
+    const token = localStorage.getItem('userToken');
+    if (!token) {
+      localStorage.setItem('prevPath', '/study-materials');
+      setRedirectAfterAuth(() => () => handlePayment(material));
+      setShowAuthModal(true);
+      return;
+    }
+    handlePayment(material);
+  };
+
+  const handleAuthSuccess = () => {
+    setShowAuthModal(false);
+    if (redirectAfterAuth) {
+      redirectAfterAuth();
+      setRedirectAfterAuth(null);
+    }
+  };
+
+  const handlePayment = (material) => {
     setSelectedMaterial(material);
     setShowPayment(true);
   };
 
   const handlePaymentSuccess = (fileUrl) => {
     window.open(fileUrl, '_blank');
+    setShowPayment(false);
   };
 
   useEffect(() => {
@@ -138,7 +161,7 @@ const StudyMaterials = () => {
     const fetchMaterials = async () => {
       try {
         setLoading(true);
-        const response = await fetch('https://stubits.onrender.com/api/materials/');
+        const response = await fetch('http://localhost:5000/api/materials/');
         const data = await response.json();
         
         if (response.ok) {
@@ -533,6 +556,14 @@ const StudyMaterials = () => {
             material={selectedMaterial}
             onClose={() => setShowPayment(false)}
             onSuccess={handlePaymentSuccess}
+          />
+        )}
+
+        {showAuthModal && (
+          <AuthPage 
+            onClose={() => setShowAuthModal(false)}
+            onSuccess={handleAuthSuccess}
+            isModal={true}
           />
         )}
 

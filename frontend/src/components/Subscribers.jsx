@@ -15,7 +15,7 @@ const Subscribers = ({ isAdminAuthenticated, adminPassword }) => {
       try {
         setIsLoading(true);
         const response = await fetch(
-          `https://stubits.onrender.com/api/subscribers?password=${adminPassword}`
+          `http://localhost:5000/api/subscribers?password=${adminPassword}`
         );
         
         const data = await response.json();

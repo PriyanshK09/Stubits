@@ -138,6 +138,38 @@
   color: white;
 }
 
+/* Add to existing CSS */
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.logout-btn {
+  padding: 0.5rem 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 100px;
+  color: #ef4444;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  transform: translateY(-1px);
+}
+
 @media (max-width: 768px) {
   .mobile-menu-button {
     display: block;
@@ -169,6 +201,23 @@
   .nav-link.highlight {
     margin-top: 2rem;
     width: 100%;
+    text-align: center;
+  }
+
+  .user-menu {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .user-name {
+    font-size: 1.25rem;
+  }
+  
+  .logout-btn {
+    width: 100%;
+    padding: 1rem;
     text-align: center;
   }
 }
