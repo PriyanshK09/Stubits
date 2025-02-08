@@ -5,10 +5,13 @@ const auth = require('../middleware/auth');
 // Create new payment
 router.post('/', auth, async (req, res) => {
   try {
+    console.log('Payment request body:', req.body); // Debug log
+
     const payment = new Payment({
       userId: req.userId,
       materialId: req.body.materialId,
       amount: req.body.amount,
+      userUpi: req.body.userUpi,
       status: 'pending'
     });
 
@@ -16,7 +19,10 @@ router.post('/', auth, async (req, res) => {
     res.status(201).json(payment);
   } catch (error) {
     console.error('Payment creation error:', error);
-    res.status(500).json({ message: 'Error creating payment' });
+    res.status(500).json({ 
+      message: 'Error creating payment',
+      error: error.message 
+    });
   }
 });
 

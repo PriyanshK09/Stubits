@@ -514,35 +514,138 @@
   color: var(--purple-400);
 }
 
+/* Update card footer and button styles */
 .sm-card-footer {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-top: 1.5rem;
+  justify-content: space-between;
+  gap: 0.75rem; /* Reduced gap */
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(147, 51, 234, 0.1);
+}
+
+.sm-price {
+  font-size: 1.25rem; /* Slightly reduced font size */
+  font-weight: 700;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+.sm-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(147, 51, 234, 0.1);
 }
 
 .sm-price {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--text-primary);
+  flex-shrink: 0;
 }
 
-.sm-buy-btn {
+.sm-card-content {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: var(--gradient-primary);
-  border: none;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100%;
+}
+
+.sm-card-description {
+  flex: 1;
+  margin: 1rem 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Update button styles */
+.sm-material-card button {
+  flex-shrink: 0;
+  padding: 0.6rem 1rem; /* Reduced padding */
   border-radius: 100px;
-  color: white;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-size: 0.875rem; /* Reduced font size */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 110px; /* Reduced minimum width */
+  max-width: 130px; /* Added maximum width */
 }
 
-.sm-buy-btn:hover {
-  background: var(--gradient-secondary);
+.sm-material-card button {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+/* Get Access button */
+.sm-material-card .sm-get-access {
+  background: var(--gradient-primary);
+  border: none;
+  color: white;
+}
+
+.sm-material-card .sm-get-access:hover {
   transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(147, 51, 234, 0.2);
+}
+
+/* Try Again button */
+.sm-material-card .sm-try-again {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.sm-material-card .sm-try-again:hover {
+  background: rgba(239, 68, 68, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Download/Access button */
+.sm-material-card .sm-download {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.sm-material-card .sm-download:hover {
+  background: rgba(34, 197, 94, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Pending state */
+.sm-material-card .sm-pending {
+  background: rgba(234, 179, 8, 0.1);
+  color: #eab308;
+  border: 1px solid rgba(234, 179, 8, 0.2);
+  cursor: not-allowed;
+}
+
+/* Disabled state */
+.sm-material-card button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
 }
 
 .sm-action {
@@ -1092,8 +1195,8 @@
   }
 
   .sm-card-footer {
-    flex-direction: column;
-    gap: 1rem;
+    flex-direction: row;
+    align-items: center;
   }
 
   .sm-buy-btn {
@@ -1104,8 +1207,166 @@
   .sm-price {
     font-size: 1.25rem;
   }
+
+  .sm-material-card button {
+    padding: 0.75rem 1rem;
+    min-width: 120px;
+    font-size: 0.9rem;
+  }
+
+  .sm-card-footer {
+    gap: 0.5rem;
+  }
+
+  .sm-material-card button {
+    padding: 0.5rem 0.75rem;
+    min-width: 100px;
+    font-size: 0.8125rem;
+  }
+
+  .sm-price {
+    font-size: 1.125rem;
+  }
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+.material-card button {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+/* Get Access button */
+.material-card button:not(.try-again):not(.download) {
+  background: var(--gradient-primary);
+  border: none;
+  color: white;
+}
+
+.material-card button:not(.try-again):not(.download):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(147, 51, 234, 0.2);
+}
+
+/* Try Again button */
+.material-card .try-again {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.material-card .try-again:hover {
+  background: rgba(239, 68, 68, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Download button */
+.material-card .download {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.material-card .download:hover {
+  background: rgba(34, 197, 94, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Disabled state */
+.material-card button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+}
+
+/* Add these styles after your existing styles */
+.sm-material-card button {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+/* Get Access button */
+.sm-material-card .sm-get-access {
+  background: var(--gradient-primary);
+  border: none;
+  color: white;
+}
+
+.sm-material-card .sm-get-access:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(147, 51, 234, 0.2);
+}
+
+/* Try Again button */
+.sm-material-card .sm-try-again {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.sm-material-card .sm-try-again:hover {
+  background: rgba(239, 68, 68, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Download/Access button */
+.sm-material-card .sm-download {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.sm-material-card .sm-download:hover {
+  background: rgba(34, 197, 94, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Pending state */
+.sm-material-card .sm-pending {
+  background: rgba(234, 179, 8, 0.1);
+  color: #eab308;
+  border: 1px solid rgba(234, 179, 8, 0.2);
+  cursor: not-allowed;
+}
+
+/* Disabled state */
+.sm-material-card button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+}
+
+/* Remove the old button styles */
+.material-card button,
+.material-card button:not(.try-again):not(.download),
+.material-card .try-again,
+.material-card .download,
+.material-card button:disabled {
+  display: none;
 }

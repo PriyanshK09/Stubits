@@ -6,9 +6,14 @@ import './PaymentGateway.css';
 const PaymentGateway = ({ material, onClose, onSuccess }) => {
   const [isPaying, setIsPaying] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState(null);
+  const [userUpi, setUserUpi] = useState('');
   const UPI_ID = "payment@stubits"; // Example UPI ID
 
   const handlePayment = async () => {
+    if (!userUpi) {
+      alert('Please enter your UPI ID');
+      return;
+    }
     setIsPaying(true);
     try {
       const response = await fetch('http://localhost:5000/api/payments', {
@@ -19,16 +24,20 @@ const PaymentGateway = ({ material, onClose, onSuccess }) => {
         },
         body: JSON.stringify({
           materialId: material._id,
-          amount: material.price
+          amount: material.price,
+          userUpi: userUpi
         })
       });
 
-      if (response.ok) {
-        setPaymentStatus('pending');
-      } else {
-        setPaymentStatus('failed');
+      if (!response.ok) {
+        throw new Error('Payment failed');
       }
+      
+      // Remove unused data variable
+      await response.json();
+      setPaymentStatus('pending');
     } catch (error) {
+      console.error('Payment error:', error);
       setPaymentStatus('failed');
     } finally {
       setIsPaying(false);
@@ -49,7 +58,6 @@ const PaymentGateway = ({ material, onClose, onSuccess }) => {
               <h2>Payment Pending Approval</h2>
               <p>Please wait while we verify your payment</p>
               <button className="close-btn" onClick={onClose}>
-                Close
               </button>
             </div>
           ) : paymentStatus === 'success' ? (
@@ -95,6 +103,16 @@ const PaymentGateway = ({ material, onClose, onSuccess }) => {
                   <button className="copy-btn" onClick={() => navigator.clipboard.writeText(UPI_ID)}>
                     Copy
                   </button>
+                </div>
+                <div className="user-upi-input">
+                  <label>Your UPI ID</label>
+                  <input 
+                    type="text"
+                    value={userUpi}
+                    onChange={(e) => setUserUpi(e.target.value)}
+                    placeholder="Enter your UPI ID"
+                    required
+                  />
                 </div>
                 <p className="instruction">
                   1. Open your UPI app

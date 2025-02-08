@@ -1,4 +1,3 @@
-// backend/models/Payment.js
 const mongoose = require('mongoose');
 
 const paymentSchema = new mongoose.Schema({
@@ -14,6 +13,10 @@ const paymentSchema = new mongoose.Schema({
   },
   amount: {
     type: Number,
+    required: true
+  },
+  userUpi: {
+    type: String,
     required: true
   },
   status: {

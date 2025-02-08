@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react"
-import { Book, Search, Filter, Sparkles, GraduationCap, Brain, BookOpen, Download, ArrowUpDown, X } from "lucide-react"
+import { Book, Search, Filter, Sparkles, GraduationCap, Brain, BookOpen, ArrowUpDown, X } from "lucide-react"
 import "./StudyMaterials.css"
 import PaymentGateway from "./PaymentGateway";
 import AuthPage from "./AuthPage";
@@ -115,6 +115,28 @@ const StudyMaterials = () => {
   const [selectedMaterial, setSelectedMaterial] = useState(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [redirectAfterAuth, setRedirectAfterAuth] = useState(null);
+  const [userPurchases, setUserPurchases] = useState([]);
+
+  useEffect(() => {
+    fetchUserPurchases();
+  }, []);
+
+  const fetchUserPurchases = async () => {
+    const token = localStorage.getItem('userToken');
+    if (!token) return;
+
+    try {
+      const response = await fetch('http://localhost:5000/api/payments/my', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await response.json();
+      setUserPurchases(data);
+    } catch (error) {
+      console.error('Failed to fetch purchases:', error);
+    }
+  };
 
   const handlePurchase = (material) => {
     const token = localStorage.getItem('userToken');
@@ -361,6 +383,43 @@ const StudyMaterials = () => {
     return displayMap[category] || capitalizeFirstLetter(category);
   };
 
+  const getAccessButton = (material) => {
+    const purchase = userPurchases.find(p => p.materialId._id === material._id);
+    
+    if (!purchase) {
+      return (
+        <button className="sm-get-access" onClick={() => handlePurchase(material)}>
+          Get Access
+        </button>
+      );
+    }
+
+    switch (purchase.status) {
+      case 'pending':
+        return <button className="sm-pending" disabled>Pending Approval</button>;
+      case 'approved':
+        return (
+          <button 
+            className="sm-download"
+            onClick={() => window.open(material.fileUrl, '_blank')}
+          >
+            Access Notes
+          </button>
+        );
+      case 'rejected':
+        return (
+          <button 
+            className="sm-try-again"
+            onClick={() => handlePurchase(material)}
+          >
+            Try Again
+          </button>
+        );
+      default:
+        return null;
+    }
+  };
+
   const filteredMaterials = getFilteredAndSortedMaterials()
 
   return (
@@ -513,13 +572,7 @@ const StudyMaterials = () => {
                   </div>
                   <div className="sm-card-footer">
                     <div className="sm-price">₹{material.price}</div>
-                    <button 
-                      className="sm-buy-btn"
-                      onClick={() => handlePurchase(material)}
-                    >
-                      <Download className="sm-btn-icon" />
-                      Get Access
-                    </button>
+                    {getAccessButton(material)}
                   </div>
                 </div>
               </div>

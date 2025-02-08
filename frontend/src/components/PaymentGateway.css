@@ -20,6 +20,7 @@
   max-width: 500px;
   position: relative;
   animation: slideUp 0.3s ease;
+  margin-top: 2.5rem;
 }
 
 .close-btn {
@@ -160,4 +161,37 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.user-upi-input {
+  margin: 1.5rem 0;
+}
+
+.user-upi-input label {
+  display: block;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.user-upi-input input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.user-upi-input input:focus {
+  outline: none;
+  border-color: rgba(147, 51, 234, 0.4);
+  box-shadow: 0 0 0 2px rgba(147, 51, 234, 0.1);
+}
+
+.user-upi-input input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.5;
 }

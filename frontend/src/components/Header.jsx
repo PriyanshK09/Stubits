@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, User } from "lucide-react";
+import { Menu, X, User, LogOut, Book } from "lucide-react";
 import "./Header.css";
 
 const Header = ({ isAdmin }) => {
@@ -8,6 +8,7 @@ const Header = ({ isAdmin }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showAdminTag, setShowAdminTag] = useState(false);
   const [userName, setUserName] = useState(null);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -42,6 +43,18 @@ const Header = ({ isAdmin }) => {
     localStorage.removeItem('userName');
     setUserName(null);
   };
+
+  const handleUserMenuClick = (e) => {
+    e.stopPropagation();
+    setShowUserMenu(!showUserMenu);
+  };
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const closeMenu = () => setShowUserMenu(false);
+    document.addEventListener('click', closeMenu);
+    return () => document.removeEventListener('click', closeMenu);
+  }, []);
 
   return (
     <header className={`header ${isScrolled ? "scrolled" : ""}`}>
@@ -85,14 +98,23 @@ const Header = ({ isAdmin }) => {
             </Link>
           )}
           {userName ? (
-            <div className="user-menu">
-              <span className="user-name">
+            <div className="user-menu" onClick={handleUserMenuClick}>
+              <button className="user-menu-button">
                 <User size={18} />
-                {userName}
-              </span>
-              <button onClick={handleLogout} className="logout-btn">
-                Sign Out
+                <span>{userName}</span>
               </button>
+              {showUserMenu && (
+                <div className="user-dropdown">
+                  <Link to="/dashboard" className="dropdown-item">
+                    <Book size={16} />
+                    My Dashboard
+                  </Link>
+                  <button onClick={handleLogout} className="dropdown-item logout">
+                    <LogOut size={16} />
+                    Sign Out
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <Link to="/auth" className="nav-link highlight">
