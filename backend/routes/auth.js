@@ -160,15 +160,15 @@ router.get('/google',
 
 router.get('/google/callback', 
   passport.authenticate('google', { 
-    failureRedirect: 'http://localhost:3000/auth?error=true',
+    failureRedirect: 'https://stubits.com/auth?error=true',
     session: false
   }),
   (req, res) => {
     try {
       const token = generateToken(req.user);
-      res.redirect(`http://localhost:3000/auth-success?token=${token}&name=${encodeURIComponent(req.user.name)}`);
+      res.redirect(`https://stubits.com/auth-success?token=${token}&name=${encodeURIComponent(req.user.name)}`);
     } catch (error) {
-      res.redirect('http://localhost:3000/auth?error=true');
+      res.redirect('https://stubits.com/auth?error=true');
     }
   }
 );
@@ -182,17 +182,17 @@ router.get('/discord',
 
 router.get('/discord/callback',
   passport.authenticate('discord', { 
-    failureRedirect: 'http://localhost:3000/auth?error=true',
+    failureRedirect: 'https://stubits.com/auth?error=true',
     session: false 
   }),
   (req, res) => {
     try {
       const token = generateToken(req.user);
-      const redirectUrl = `http://localhost:3000/auth-success?token=${token}&name=${encodeURIComponent(req.user.name)}`;
+      const redirectUrl = `https://stubits.com/auth-success?token=${token}&name=${encodeURIComponent(req.user.name)}`;
       res.redirect(redirectUrl);
     } catch (error) {
       console.error('Discord callback error:', error);
-      res.redirect('http://localhost:3000/auth?error=true');
+      res.redirect('https://stubits.com/auth?error=true');
     }
   }
 );
