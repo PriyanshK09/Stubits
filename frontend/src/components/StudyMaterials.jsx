@@ -126,7 +126,7 @@ const StudyMaterials = () => {
     if (!token) return;
 
     try {
-      const response = await fetch('http://localhost:5000/api/payments/my', {
+      const response = await fetch('https://stubits.onrender.com/api/payments/my', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -183,7 +183,7 @@ const StudyMaterials = () => {
     const fetchMaterials = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:5000/api/materials/');
+        const response = await fetch('https://stubits.onrender.com/api/materials/');
         const data = await response.json();
         
         if (response.ok) {

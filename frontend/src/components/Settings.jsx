@@ -18,7 +18,7 @@ const Settings = ({ admintoken }) => { // Changed from adminToken
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/admin/change-password', {
+      const response = await fetch('https://stubits.onrender.com/api/admin/change-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -49,70 +49,76 @@ const Settings = ({ admintoken }) => { // Changed from adminToken
   };
 
   return (
-    <div className="settings-container">
-      <h1 className="settings-title">Settings</h1>
-
-      <div className="settings-grid">
-        <div className="settings-card">
-          <div className="settings-card-header">
-            <KeyRound className="settings-icon" />
-            <h2>Change Password</h2>
-          </div>
-          <form onSubmit={handlePasswordChange}>
-            <div className="form-group">
-              <label>Current Password</label>
-              <input
-                type="password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>New Password</label>
-              <input
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                required
-                minLength={6}
-              />
-            </div>
-            <div className="form-group">
-              <label>Confirm New Password</label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                minLength={6}
-              />
-            </div>
-            <button type="submit" className="settings-btn" disabled={loading}>
-              <Save size={18} />
-              {loading ? 'Updating...' : 'Update Password'}
-            </button>
-          </form>
-          {message.text && (
-            <div className={`message ${message.type}`}>
-              {message.text}
-            </div>
-          )}
+    <div className="admin-component-content">
+      <div className="admin-component-header">
+        <div className="header-text">
+          <h2>Platform Settings</h2>
+          <p>Manage admin access and platform configuration</p>
         </div>
-
-        <div className="settings-card">
-          <div className="settings-card-header">
-            <User className="settings-icon" />
-            <h2>Admin Profile</h2>
-          </div>
-          <div className="profile-info">
-            <div className="info-item">
-              <Mail className="info-icon" />
-              <span>welcome@stubits.com</span>
+      </div>
+      <div className="settings-container">
+        <div className="settings-grid">
+          <div className="settings-card">
+            <div className="settings-card-header">
+              <KeyRound className="settings-icon" />
+              <h2>Change Password</h2>
             </div>
-            <div className="info-item">
-              <User className="info-icon" />
-              <span>Administrator</span>
+            <form onSubmit={handlePasswordChange}>
+              <div className="form-group">
+                <label>Current Password</label>
+                <input
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>New Password</label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                  minLength={6}
+                />
+              </div>
+              <div className="form-group">
+                <label>Confirm New Password</label>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  minLength={6}
+                />
+              </div>
+              <button type="submit" className="settings-btn" disabled={loading}>
+                <Save size={18} />
+                {loading ? 'Updating...' : 'Update Password'}
+              </button>
+            </form>
+            {message.text && (
+              <div className={`message ${message.type}`}>
+                {message.text}
+              </div>
+            )}
+          </div>
+
+          <div className="settings-card">
+            <div className="settings-card-header">
+              <User className="settings-icon" />
+              <h2>Admin Profile</h2>
+            </div>
+            <div className="profile-info">
+              <div className="info-item">
+                <Mail className="info-icon" />
+                <span>welcome@stubits.com</span>
+              </div>
+              <div className="info-item">
+                <User className="info-icon" />
+                <span>Administrator</span>
+              </div>
             </div>
           </div>
         </div>

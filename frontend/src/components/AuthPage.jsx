@@ -60,7 +60,7 @@ const AuthPage = ({ onClose, onSuccess, isModal }) => {
     setError("")
 
     try {
-      const url = `http://localhost:5000/api/auth/${isLogin ? "login" : "register"}`
+      const url = `https://stubits.onrender.com/api/auth/${isLogin ? "login" : "register"}`
       const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -84,11 +84,11 @@ const AuthPage = ({ onClose, onSuccess, isModal }) => {
   }
 
   const handleGoogleLogin = async () => {
-    window.location.href = 'http://localhost:5000/api/auth/google';
+    window.location.href = 'https://stubits.onrender.com/api/auth/google';
   };
 
   const handleDiscordLogin = async () => {
-    window.location.href = 'http://localhost:5000/api/auth/discord';
+    window.location.href = 'https://stubits.onrender.com/api/auth/discord';
   };
 
   const containerClass = `stubits-auth-wrapper ${isModal ? "modal" : ""}`

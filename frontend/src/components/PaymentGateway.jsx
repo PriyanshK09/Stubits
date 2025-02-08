@@ -16,7 +16,7 @@ const PaymentGateway = ({ material, onClose, onSuccess }) => {
     }
     setIsPaying(true);
     try {
-      const response = await fetch('http://localhost:5000/api/payments', {
+      const response = await fetch('https://stubits.onrender.com/api/payments', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
