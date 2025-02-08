@@ -1,6 +1,6 @@
 // frontend/src/components/PaymentGateway.jsx
 import React, { useState } from 'react';
-import { X, CheckCircle, AlertCircle } from 'lucide-react';
+import { X, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import './PaymentGateway.css';
 
 const PaymentGateway = ({ material, onClose, onSuccess }) => {
@@ -10,11 +10,29 @@ const PaymentGateway = ({ material, onClose, onSuccess }) => {
 
   const handlePayment = async () => {
     setIsPaying(true);
-    // Simulate payment verification
-    setTimeout(() => {
-      setPaymentStatus('success');
+    try {
+      const response = await fetch('http://localhost:5000/api/payments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+        },
+        body: JSON.stringify({
+          materialId: material._id,
+          amount: material.price
+        })
+      });
+
+      if (response.ok) {
+        setPaymentStatus('pending');
+      } else {
+        setPaymentStatus('failed');
+      }
+    } catch (error) {
+      setPaymentStatus('failed');
+    } finally {
       setIsPaying(false);
-    }, 2000);
+    }
   };
 
   return (
@@ -25,7 +43,41 @@ const PaymentGateway = ({ material, onClose, onSuccess }) => {
         </button>
 
         <div className="payment-content">
-          {!paymentStatus ? (
+          {paymentStatus === 'pending' ? (
+            <div className="payment-status">
+              <RefreshCw size={48} className="pending-icon" />
+              <h2>Payment Pending Approval</h2>
+              <p>Please wait while we verify your payment</p>
+              <button className="close-btn" onClick={onClose}>
+                Close
+              </button>
+            </div>
+          ) : paymentStatus === 'success' ? (
+            <div className="payment-status">
+              <CheckCircle size={48} className="success-icon" />
+              <h2>Payment Successful!</h2>
+              <p>You can now access the study material</p>
+              <button 
+                className="access-btn"
+                onClick={() => onSuccess(material.fileUrl)}
+              >
+                Access Notes
+              </button>
+            </div>
+          ) : paymentStatus === 'failed' ? (
+            <div className="payment-status">
+              <AlertCircle size={48} className="error-icon" />
+              <h2>Payment Failed</h2>
+              <p>Please try again</p>
+              <button 
+                className="retry-btn"
+                onClick={() => setPaymentStatus(null)}
+              >
+                Retry Payment
+              </button>
+            </div>
+          ) : (
+            // Initial payment screen
             <>
               <h2>Complete Payment</h2>
               <div className="payment-details">
@@ -61,34 +113,6 @@ const PaymentGateway = ({ material, onClose, onSuccess }) => {
                 {isPaying ? 'Verifying...' : 'I have paid'}
               </button>
             </>
-          ) : (
-            <div className="payment-status">
-              {paymentStatus === 'success' ? (
-                <>
-                  <CheckCircle size={48} className="success-icon" />
-                  <h2>Payment Successful!</h2>
-                  <p>You can now access the study material</p>
-                  <button 
-                    className="access-btn"
-                    onClick={() => onSuccess(material.fileUrl)}
-                  >
-                    Access Notes
-                  </button>
-                </>
-              ) : (
-                <>
-                  <AlertCircle size={48} className="error-icon" />
-                  <h2>Payment Failed</h2>
-                  <p>Please try again</p>
-                  <button 
-                    className="retry-btn"
-                    onClick={() => setPaymentStatus(null)}
-                  >
-                    Retry Payment
-                  </button>
-                </>
-              )}
-            </div>
           )}
         </div>
       </div>

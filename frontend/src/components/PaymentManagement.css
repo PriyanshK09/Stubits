@@ -1,0 +1,118 @@
+.payments-container {
+  padding: 2rem;
+}
+
+.payments-container h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  background: linear-gradient(45deg, #9333ea, #7928ca);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.payments-list {
+  display: grid;
+  gap: 1.5rem;
+  max-width: 1200px;
+}
+
+.payment-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.payment-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.payment-info h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.payment-info p {
+  color: var(--text-secondary);
+  margin: 0.5rem 0;
+}
+
+.status {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 100px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.status.pending {
+  background: rgba(234, 179, 8, 0.1);
+  color: #eab308;
+}
+
+.status.approved {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+}
+
+.status.rejected {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.payment-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.payment-actions button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.approve-btn {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+}
+
+.reject-btn {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.approve-btn:hover {
+  background: rgba(34, 197, 94, 0.2);
+}
+
+.reject-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.payments-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: var(--text-secondary);
+}
+
+.no-payments {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-secondary);
+  border: 1px dashed rgba(147, 51, 234, 0.2);
+  border-radius: 16px;
+}

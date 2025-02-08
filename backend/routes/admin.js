@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const StudyMaterial = require('../models/StudyMaterial');
+const Payment = require('../models/Payment');
 
 // Middleware to check admin auth
 const checkAdmin = (req, res, next) => {
@@ -90,6 +91,33 @@ router.delete('/materials/:id', checkAdmin, async (req, res) => {
     res.json({ message: 'Material deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Error deleting material' });
+  }
+});
+
+// Get all payments
+router.get('/payments', checkAdmin, async (req, res) => {
+  try {
+    const payments = await Payment.find()
+      .populate('userId', 'name email')
+      .populate('materialId')
+      .sort('-createdAt');
+    res.json(payments);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching payments' });
+  }
+});
+
+// Update payment status
+router.patch('/payments/:id', checkAdmin, async (req, res) => {
+  try {
+    const payment = await Payment.findByIdAndUpdate(
+      req.params.id,
+      { status: req.body.status },
+      { new: true }
+    );
+    res.json(payment);
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating payment' });
   }
 });
 
