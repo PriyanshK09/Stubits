@@ -106,18 +106,18 @@ return (
                                     <span>₹{material.price}</span>
                                 </div>
                             </div>
-                            <div className="material-actions">
+                            <div className="material-actions mn-material-actions">
                                 <button 
-                                    className="edit-btn"
+                                    className="mn-edit-btn"
                                     onClick={() => handleEditClick(material)}
                                 >
-                                    <Edit />
+                                    <Edit size={18} />
                                 </button>
                                 <button 
-                                    className="delete-btn"
+                                    className="mn-delete-btn"
                                     onClick={() => handleDelete(material._id)}
                                 >
-                                    <Trash2 />
+                                    <Trash2 size={18} />
                                 </button>
                             </div>
                         </div>
@@ -128,8 +128,8 @@ return (
         {showPreview && (
             <div className="preview-modal">
                 <div className="preview-content">
-                    <h3>Preview Notes</h3>
-                    <p>Do you want to view these notes?</p>
+                    <h3>Access Study Material</h3>
+                    <p>Choose an action for this study material</p>
                     <div className="preview-actions">
                         <button 
                             className="preview-btn"
@@ -140,6 +140,26 @@ return (
                         >
                             <ExternalLink size={16} />
                             Open Notes
+                        </button>
+                        <button 
+                            className="mn-preview-edit-btn"
+                            onClick={() => {
+                                handleEditClick(materials.find(m => m.fileUrl === previewUrl));
+                                setShowPreview(false);
+                            }}
+                        >
+                            <Edit size={16} />
+                            Edit Material
+                        </button>
+                        <button 
+                            className="mn-preview-delete-btn"
+                            onClick={() => {
+                                handleDelete(materials.find(m => m.fileUrl === previewUrl)?._id);
+                                setShowPreview(false);
+                            }}
+                        >
+                            <Trash2 size={16} />
+                            Delete Material
                         </button>
                         <button 
                             className="cancel-btn"

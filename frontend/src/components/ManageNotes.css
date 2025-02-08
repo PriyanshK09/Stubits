@@ -11,7 +11,7 @@
   align-items: center;
   margin-top: 3.5rem;
   margin-bottom: 2rem;
-  padding-top: 2rem;
+  padding-top: 1rem; /* Reduced padding */
 }
 
 .notes-header h1 {
@@ -99,6 +99,46 @@
   margin-top: 1rem;
   padding-top: 1rem;
   border-top: 1px solid rgba(147, 51, 234, 0.2);
+}
+
+/* Add specific styles for material card actions */
+.mn-material-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(147, 51, 234, 0.2);
+}
+
+.mn-edit-btn,
+.mn-delete-btn {
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mn-edit-btn {
+  color: #9333ea;
+}
+
+.mn-delete-btn {
+  color: #ef4444;
+}
+
+.mn-edit-btn:hover {
+  background: rgba(147, 51, 234, 0.1);
+  transform: translateY(-2px);
+}
+
+.mn-delete-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  transform: translateY(-2px);
 }
 
 .edit-btn,
@@ -249,6 +289,7 @@
   }
 }
 
+/* Update preview modal styles */
 .preview-modal {
   position: fixed;
   inset: 0;
@@ -262,56 +303,106 @@
 }
 
 .preview-content {
-  background: var(--surface-light);
-  border: 1px solid var(--purple-500);
-  border-radius: 16px;
+  background: rgba(17, 12, 34, 0.95);
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  border-radius: 20px;
   padding: 2rem;
   width: 90%;
-  max-width: 400px;
+  max-width: 440px;
   text-align: center;
   animation: slideUp 0.3s ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .preview-content h3 {
-  color: var(--text-primary);
-  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: white;
+  margin-bottom: 0.75rem;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .preview-content p {
   color: var(--text-secondary);
   margin-bottom: 2rem;
+  font-size: 0.95rem;
 }
 
 .preview-actions {
   display: flex;
-  gap: 1rem;
-  justify-content: center;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-.preview-btn, .cancel-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
+/* Update preview action buttons */
 .preview-btn {
   background: var(--gradient-primary);
   border: none;
   color: white;
+  padding: 0.875rem;
+  border-radius: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.mn-preview-edit-btn,
+.mn-preview-delete-btn {
+  padding: 0.75rem;
+  border-radius: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.mn-preview-edit-btn {
+  background: rgba(147, 51, 234, 0.1);
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  color: #9333ea;
+}
+
+.mn-preview-delete-btn {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #ef4444;
 }
 
 .cancel-btn {
+  padding: 0.75rem;
+  border-radius: 12px;
   background: transparent;
-  border: 1px solid var(--purple-500);
-  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
+/* Hover effects */
 .preview-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(147, 51, 234, 0.2);
+}
+
+.mn-preview-edit-btn:hover {
+  background: rgba(147, 51, 234, 0.15);
+  transform: translateY(-2px);
+}
+
+.mn-preview-delete-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  transform: translateY(-2px);
+}
+
+.cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
   transform: translateY(-2px);
 }
 
