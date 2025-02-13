@@ -43,7 +43,7 @@ const FilterPopup = ({ filters, setFilters, onApply, onClose }) => {
             <option value="physics">Physics</option>
             <option value="chemistry">Chemistry</option>
             <option value="mathematics">Mathematics</option>
-            <option value="biology">Biology</option>
+            <option value="physicaleducation">Physical Education</option>
           </select>
         </div>
 

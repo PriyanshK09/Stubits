@@ -130,7 +130,7 @@ const UploadMaterial = ({ adminPassword, editData, setEditData, setActiveTab }) 
                 <option value="physics">Physics</option>
                 <option value="chemistry">Chemistry</option>
                 <option value="mathematics">Mathematics</option>
-                <option value="biology">Biology</option>
+                <option value="physicaleducation">physicaleducation</option>
               </select>
             </div>
           </div>

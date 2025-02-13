@@ -18,7 +18,8 @@ const studyMaterialSchema = new mongoose.Schema({
   },
   subject: {
     type: String,
-    required: true
+    required: true,
+    enum: ['physics', 'chemistry', 'mathematics', 'physicaleducation']
   },
   price: {
     type: Number,
