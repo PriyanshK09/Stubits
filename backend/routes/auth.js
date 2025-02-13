@@ -8,6 +8,11 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const DiscordStrategy = require('passport-discord').Strategy;
 const crypto = require('crypto');
 
+const PROD_FRONTEND_URL = 'https://stubits.com';
+const PROD_BACKEND_URL = 'https://stubits.onrender.com';
+const DEV_FRONTEND_URL = 'http://localhost:3000';
+const DEV_BACKEND_URL = 'http://localhost:5000';
+
 // Add generateToken function
 const generateToken = (user) => {
   return jwt.sign(
@@ -38,7 +43,9 @@ const logUserAuth = (user, method) => {
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "https://stubits.onrender.com/api/auth/google/callback",
+    callbackURL: process.env.NODE_ENV === 'production' 
+      ? `${PROD_BACKEND_URL}/api/auth/google/callback`
+      : `${DEV_BACKEND_URL}/api/auth/google/callback`,
     userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
   },
   async (accessToken, refreshToken, profile, done) => {
@@ -158,17 +165,26 @@ router.get('/google',
   })
 );
 
-router.get('/google/callback', 
+router.get('/google/callback',
   passport.authenticate('google', { 
-    failureRedirect: 'https://stubits.com/auth?error=true',
+    failureRedirect: process.env.NODE_ENV === 'production'
+      ? `${PROD_FRONTEND_URL}/auth?error=true`
+      : `${DEV_FRONTEND_URL}/auth?error=true`,
     session: false
   }),
   (req, res) => {
     try {
       const token = generateToken(req.user);
-      res.redirect(`https://stubits.com/auth-success?token=${token}&name=${encodeURIComponent(req.user.name)}`);
+      const redirectUrl = process.env.NODE_ENV === 'production'
+        ? `${PROD_FRONTEND_URL}/auth-success?token=${token}&name=${encodeURIComponent(req.user.name)}`
+        : `${DEV_FRONTEND_URL}/auth-success?token=${token}&name=${encodeURIComponent(req.user.name)}`;
+      res.redirect(redirectUrl);
     } catch (error) {
-      res.redirect('https://stubits.com/auth?error=true');
+      console.error('Google callback error:', error);
+      res.redirect(process.env.NODE_ENV === 'production'
+        ? `${PROD_FRONTEND_URL}/auth?error=true`
+        : `${DEV_FRONTEND_URL}/auth?error=true`
+      );
     }
   }
 );
@@ -182,17 +198,24 @@ router.get('/discord',
 
 router.get('/discord/callback',
   passport.authenticate('discord', { 
-    failureRedirect: 'https://stubits.com/auth?error=true',
+    failureRedirect: process.env.NODE_ENV === 'production'
+      ? `${PROD_FRONTEND_URL}/auth?error=true`
+      : `${DEV_FRONTEND_URL}/auth?error=true`,
     session: false 
   }),
   (req, res) => {
     try {
       const token = generateToken(req.user);
-      const redirectUrl = `https://stubits.com/auth-success?token=${token}&name=${encodeURIComponent(req.user.name)}`;
+      const redirectUrl = process.env.NODE_ENV === 'production'
+        ? `${PROD_FRONTEND_URL}/auth-success?token=${token}&name=${encodeURIComponent(req.user.name)}`
+        : `${DEV_FRONTEND_URL}/auth-success?token=${token}&name=${encodeURIComponent(req.user.name)}`;
       res.redirect(redirectUrl);
     } catch (error) {
       console.error('Discord callback error:', error);
-      res.redirect('https://stubits.com/auth?error=true');
+      res.redirect(process.env.NODE_ENV === 'production'
+        ? `${PROD_FRONTEND_URL}/auth?error=true`
+        : `${DEV_FRONTEND_URL}/auth?error=true`
+      );
     }
   }
 );
