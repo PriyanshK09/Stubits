@@ -138,22 +138,53 @@ router.patch('/payments/:id', checkAdmin, async (req, res) => {
 
 router.get('/stats', checkAdmin, async (req, res) => {
   try {
-    // Total Revenue from approved payments
+    const { timeRange, month } = req.query;
+    let dateFilter = {};
+    
+    // Calculate date range based on filter
+    switch(timeRange) {
+      case 'week':
+        dateFilter = { 
+          createdAt: { 
+            $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) 
+          } 
+        };
+        break;
+      case 'month':
+        const year = new Date().getFullYear();
+        const monthNum = parseInt(month) || new Date().getMonth() + 1;
+        const startDate = new Date(year, monthNum - 1, 1);
+        const endDate = new Date(year, monthNum, 0);
+        dateFilter = {
+          createdAt: {
+            $gte: startDate,
+            $lte: endDate
+          }
+        };
+        break;
+      default:
+        dateFilter = {}; // all time
+    }
+
+    // Base match for all queries
+    const baseMatch = { 
+      status: 'approved',
+      ...dateFilter 
+    };
+
+    // Get basic stats
     const totalRevenue = await Payment.aggregate([
-      { $match: { status: 'approved' } },
+      { $match: baseMatch },
       { $group: { _id: null, total: { $sum: '$amount' } } }
     ]);
 
-    // Total Sales count
-    const totalSales = await Payment.countDocuments({ status: 'approved' });
+    const totalSales = await Payment.countDocuments(baseMatch);
+    const activeCustomers = await Payment.distinct('userId', baseMatch);
 
-    // Active customers (users who have made at least one approved purchase)
-    const activeCustomers = await Payment.distinct('userId', { status: 'approved' });
-
-    // Top performing notes
+    // Get top notes
     const topNotes = await Payment.aggregate([
-      { $match: { status: 'approved' } },
-      { 
+      { $match: baseMatch },
+      {
         $group: {
           _id: '$materialId',
           sales: { $sum: 1 },
@@ -180,41 +211,9 @@ router.get('/stats', checkAdmin, async (req, res) => {
       { $limit: 5 }
     ]);
 
-    // Top customers
-    const topCustomers = await Payment.aggregate([
-      { $match: { status: 'approved' } },
-      {
-        $group: {
-          _id: '$userId',
-          purchases: { $sum: 1 },
-          spent: { $sum: '$amount' }
-        }
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'user'
-        }
-      },
-      { $unwind: '$user' },
-      {
-        $project: {
-          id: '$_id',
-          name: '$user.name',
-          email: '$user.email',
-          purchases: 1,
-          spent: 1
-        }
-      },
-      { $sort: { spent: -1 } },
-      { $limit: 5 }
-    ]);
-
-    // Sales distribution by category
+    // Sales distribution
     const salesDistribution = await Payment.aggregate([
-      { $match: { status: 'approved' } },
+      { $match: baseMatch },
       {
         $lookup: {
           from: 'studymaterials',
@@ -239,15 +238,17 @@ router.get('/stats', checkAdmin, async (req, res) => {
       }
     ]);
 
-    // Revenue trend (last 7 days)
+    // Revenue trend
     const revenueTrend = await Payment.aggregate([
-      { $match: { 
-        status: 'approved',
-        createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
-      }},
+      { $match: baseMatch },
       {
         $group: {
-          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          _id: {
+            $dateToString: {
+              format: '%Y-%m-%d',
+              date: '$createdAt'
+            }
+          },
           amount: { $sum: '$amount' }
         }
       },
@@ -261,20 +262,27 @@ router.get('/stats', checkAdmin, async (req, res) => {
       }
     ]);
 
-    res.json({
-      totalRevenue: totalRevenue[0]?.total || 0,
-      totalSales,
-      activeCustomers: activeCustomers.length,
-      avgOrderValue: totalSales ? Math.round(totalRevenue[0]?.total / totalSales) : 0,
-      topNotes,
-      topCustomers,
-      salesDistribution,
-      revenueTrend
-    });
+    const responseData = {
+      overview: {
+        totalRevenue: totalRevenue[0]?.total || 0,
+        totalSales: totalSales || 0,
+        activeCustomers: activeCustomers?.length || 0,
+        averageOrderValue: totalSales ? (totalRevenue[0]?.total || 0) / totalSales : 0
+      },
+      topNotes: topNotes || [],
+      salesDistribution: salesDistribution || [],
+      revenueTrend: revenueTrend || [],
+      timeRange
+    };
+
+    res.json(responseData);
 
   } catch (error) {
     console.error('Error fetching stats:', error);
-    res.status(500).json({ message: 'Error fetching statistics' });
+    res.status(500).json({
+      message: 'Error fetching statistics',
+      error: error.message
+    });
   }
 });
 
