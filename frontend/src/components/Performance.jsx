@@ -191,7 +191,7 @@ const Performance = ({ adminPassword }) => {
           <div className="chart-card revenue-trend">
             <h3>Revenue Trend</h3>
             {hasData.revenueTrend && (
-              <RevenueChart data={stats?.revenueTrend} />
+              <RevenueChart data={stats?.revenueTrend || []} />
             )}
           </div>
         )}
@@ -201,7 +201,7 @@ const Performance = ({ adminPassword }) => {
           <h3>Top Performing Notes</h3>
           {hasData.topNotes && (
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={stats?.topNotes}>
+              <BarChart data={stats?.topNotes || []}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(147, 51, 234, 0.1)" />
                 <XAxis dataKey="title" stroke="#94A3B8" />
                 <YAxis stroke="#94A3B8" />
@@ -220,13 +220,13 @@ const Performance = ({ adminPassword }) => {
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie
-                    data={stats?.salesDistribution}
+                    data={stats?.salesDistribution || []}
                     innerRadius={60}
                     outerRadius={80}
                     paddingAngle={5}
                     dataKey="value"
                   >
-                    {stats?.salesDistribution.map((entry, index) => (
+                    {(stats?.salesDistribution || []).map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
@@ -235,11 +235,11 @@ const Performance = ({ adminPassword }) => {
               </ResponsiveContainer>
             )}
             <div className="chart-legend">
-              {stats?.salesDistribution.map((item, index) => (
-                <div key={item.name} className="legend-item">
+              {(stats?.salesDistribution || []).map((item, index) => (
+                <div key={item.name || index} className="legend-item">
                   <span className="legend-color" style={{ backgroundColor: COLORS[index % COLORS.length] }}></span>
-                  <span className="legend-label">{item.name}</span>
-                  <span className="legend-value">{item.value}%</span>
+                  <span className="legend-label">{item.name || 'Unknown'}</span>
+                  <span className="legend-value">{item.value || 0}%</span>
                 </div>
               ))}
             </div>
@@ -269,13 +269,15 @@ const Performance = ({ adminPassword }) => {
         </div>
 
         {/* Category Performance */}
-        <CategoryPerformance data={stats?.categoryPerformance} />
+        {stats?.categoryPerformance && stats.categoryPerformance.length > 0 && (
+          <CategoryPerformance data={stats.categoryPerformance} />
+        )}
       </div>
     </div>
   );
 };
 
-const RevenueChart = ({ data }) => (
+const RevenueChart = ({ data = [] }) => (
   <ResponsiveContainer width="100%" height={300}>
     <AreaChart data={data}>
       <defs>
@@ -288,10 +290,10 @@ const RevenueChart = ({ data }) => (
       <XAxis 
         dataKey="date" 
         stroke="#94A3B8"
-        tickFormatter={(date) => new Date(date).toLocaleDateString('en-US', { 
+        tickFormatter={(date) => date ? new Date(date).toLocaleDateString('en-US', { 
           month: 'short', 
           day: 'numeric' 
-        })}
+        }) : ''}
       />
       <YAxis stroke="#94A3B8">
         <Label
@@ -320,25 +322,25 @@ const RevenueChart = ({ data }) => (
   </ResponsiveContainer>
 );
 
-const CategoryPerformance = ({ data }) => (
+const CategoryPerformance = ({ data = [] }) => (
   <div className="category-performance">
     <h3>Category Performance</h3>
     <div className="category-grid">
-      {data.map(category => (
+      {Array.isArray(data) && data.map(category => (
         <div key={category.category} className="category-card">
-          <h4>{category.category}</h4>
+          <h4>{category.category || 'Uncategorized'}</h4>
           <div className="category-stats">
             <div className="stat">
               <span>Revenue</span>
-              <strong>₹{category.revenue.toLocaleString()}</strong>
+              <strong>₹{(category.revenue || 0).toLocaleString()}</strong>
             </div>
             <div className="stat">
               <span>Sales</span>
-              <strong>{category.sales}</strong>
+              <strong>{category.sales || 0}</strong>
             </div>
             <div className="stat">
               <span>Avg. Order</span>
-              <strong>₹{category.averageOrderValue.toLocaleString()}</strong>
+              <strong>₹{(category.averageOrderValue || 0).toLocaleString()}</strong>
             </div>
           </div>
         </div>
