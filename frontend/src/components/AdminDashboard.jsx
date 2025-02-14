@@ -1,6 +1,6 @@
 // frontend/src/components/AdminDashboard.jsx
 import React, { useState } from 'react';
-import { Book, Upload, Settings as SettingsIcon, Users, LogOut, CreditCard, LineChart } from 'lucide-react';
+import { Book, Upload, Settings as SettingsIcon, Users, LogOut, CreditCard, LineChart, Heart } from 'lucide-react';
 import './AdminDashboard.css';
 import ManageNotes from './ManageNotes';
 import Subscribers from './Subscribers';
@@ -8,6 +8,7 @@ import UploadMaterial from './UploadMaterial';
 import PaymentManagement from './PaymentManagement';
 import SettingsComponent from './Settings';
 import Performance from './Performance';
+import DonationManagement from './DonationManagement';
 
 const AdminDashboard = ({ setIsAdmin }) => {
   const [activeTab, setActiveTab] = useState('notes');
@@ -72,91 +73,97 @@ const AdminDashboard = ({ setIsAdmin }) => {
       <aside className="admin-sidebar">
         <nav className="admin-nav">
           <button
-            className={`nav-item ${activeTab === 'notes' ? 'active' : ''}`}
-            onClick={() => setActiveTab('notes')}
+            className={`nav-item ${activeTab === "notes" ? "active" : ""}`}
+            onClick={() => setActiveTab("notes")}
           >
             <Book />
             <span>Manage Notes</span>
           </button>
           <button
-            className={`nav-item ${activeTab === 'subscribers' ? 'active' : ''}`}
-            onClick={() => setActiveTab('subscribers')}
+            className={`nav-item ${
+              activeTab === "subscribers" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("subscribers")}
           >
             <Users />
             <span>Subscribers</span>
           </button>
           <button
-            className={`nav-item ${activeTab === 'upload' ? 'active' : ''}`}
-            onClick={() => setActiveTab('upload')}
+            className={`nav-item ${activeTab === "upload" ? "active" : ""}`}
+            onClick={() => setActiveTab("upload")}
           >
             <Upload />
             <span>Upload Material</span>
           </button>
           <button
-            className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`}
-            onClick={() => setActiveTab('settings')}
+            className={`nav-item ${activeTab === "settings" ? "active" : ""}`}
+            onClick={() => setActiveTab("settings")}
           >
             <SettingsIcon />
             <span>Settings</span>
           </button>
           <button
-            className={`nav-item ${activeTab === 'payments' ? 'active' : ''}`}
-            onClick={() => setActiveTab('payments')}
+            className={`nav-item ${activeTab === "payments" ? "active" : ""}`}
+            onClick={() => setActiveTab("payments")}
           >
             <CreditCard />
             <span>Payments</span>
           </button>
           <button
-            className={`nav-item ${activeTab === 'performance' ? 'active' : ''}`}
-            onClick={() => setActiveTab('performance')}
+            className={`nav-item ${
+              activeTab === "performance" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("performance")}
           >
             <LineChart />
             <span>Performance</span>
           </button>
-          <button
-            className="nav-item logout"
-            onClick={handleLogout}
-          >
+          <button className="nav-item logout" onClick={handleLogout}>
             <LogOut />
             <span>Logout</span>
+          </button>
+          <button
+            className={`nav-item ${activeTab === "donations" ? "active" : ""}`}
+            onClick={() => setActiveTab("donations")}
+          >
+            <Heart />
+            <span>Donations</span>
           </button>
         </nav>
       </aside>
 
       <main className="admin-main">
-        {activeTab === 'notes' && (
-          <ManageNotes 
-            adminPassword={password} 
+        {activeTab === "notes" && (
+          <ManageNotes
+            adminPassword={password}
             setActiveTab={setActiveTab}
             setEditData={setEditData}
           />
         )}
-        {activeTab === 'upload' && (
-          <UploadMaterial 
+        {activeTab === "upload" && (
+          <UploadMaterial
             adminPassword={password}
             editData={editData}
             setEditData={setEditData}
-            setActiveTab={setActiveTab}  // Add this prop
+            setActiveTab={setActiveTab} // Add this prop
           />
         )}
-        {activeTab === 'subscribers' && (
-          <Subscribers 
-            isAdminAuthenticated={true} 
-            adminPassword={password} 
-          />
+        {activeTab === "subscribers" && (
+          <Subscribers isAdminAuthenticated={true} adminPassword={password} />
         )}
-        {activeTab === 'settings' && (
+        {activeTab === "settings" && (
           <div className="settings-wrapper">
-            <SettingsComponent 
-              admintoken={password} 
-            />
+            <SettingsComponent admintoken={password} />
           </div>
         )}
-        {activeTab === 'payments' && (
+        {activeTab === "payments" && (
           <PaymentManagement adminPassword={password} />
         )}
-        {activeTab === 'performance' && (
+        {activeTab === "performance" && (
           <Performance adminPassword={password} />
+        )}
+        {activeTab === "donations" && (
+          <DonationManagement adminPassword={password} />
         )}
       </main>
     </div>
