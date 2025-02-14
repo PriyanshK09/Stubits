@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, 
-  PieChart, Pie, Cell, ResponsiveContainer, AreaChart, Area 
+  PieChart, Pie, Cell, ResponsiveContainer, AreaChart, Area, Label 
 } from 'recharts';
 import { 
   TrendingUp, Users, FileText, IndianRupee,
@@ -16,11 +16,15 @@ const Performance = ({ adminPassword }) => {
 
   const fetchStats = useCallback(async () => {
     try {
-      const response = await fetch('https://stubits.onrender.com/api/admin/stats', {
-        headers: {
-          'adminKey': adminPassword
+      setLoading(true);
+      const response = await fetch(
+        `https://stubits.onrender.com/api/admin/stats?timeRange=${timeRange}`,
+        {
+          headers: {
+            'adminKey': adminPassword
+          }
         }
-      });
+      );
       const data = await response.json();
       setStats(data);
     } catch (error) {
@@ -28,7 +32,7 @@ const Performance = ({ adminPassword }) => {
     } finally {
       setLoading(false);
     }
-  }, [adminPassword]);
+  }, [adminPassword, timeRange]);
 
   useEffect(() => {
     fetchStats();
@@ -159,27 +163,7 @@ const Performance = ({ adminPassword }) => {
         <div className="chart-card revenue-trend">
           <h3>Revenue Trend</h3>
           {hasData.revenueTrend && (
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={stats?.revenueTrend}>
-                <defs>
-                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#9333ea" stopOpacity={0.2}/>
-                    <stop offset="95%" stopColor="#9333ea" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(147, 51, 234, 0.1)" />
-                <XAxis dataKey="date" stroke="#94A3B8" />
-                <YAxis stroke="#94A3B8" />
-                <Tooltip />
-                <Area 
-                  type="monotone" 
-                  dataKey="amount" 
-                  stroke="#9333ea" 
-                  fillOpacity={1} 
-                  fill="url(#colorRevenue)" 
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+            <RevenueChart data={stats?.revenueTrend} />
           )}
         </div>
 
@@ -252,9 +236,84 @@ const Performance = ({ adminPassword }) => {
             ))}
           </div>
         </div>
+
+        {/* Category Performance */}
+        <CategoryPerformance data={stats?.categoryPerformance} />
       </div>
     </div>
   );
 };
+
+const RevenueChart = ({ data }) => (
+  <ResponsiveContainer width="100%" height={300}>
+    <AreaChart data={data}>
+      <defs>
+        <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="5%" stopColor="#9333ea" stopOpacity={0.3}/>
+          <stop offset="95%" stopColor="#9333ea" stopOpacity={0}/>
+        </linearGradient>
+      </defs>
+      <CartesianGrid strokeDasharray="3 3" stroke="rgba(147, 51, 234, 0.1)" />
+      <XAxis 
+        dataKey="date" 
+        stroke="#94A3B8"
+        tickFormatter={(date) => new Date(date).toLocaleDateString('en-US', { 
+          month: 'short', 
+          day: 'numeric' 
+        })}
+      />
+      <YAxis stroke="#94A3B8">
+        <Label
+          value="Revenue (₹)"
+          position="insideLeft"
+          angle={-90}
+          style={{ fill: '#94A3B8' }}
+        />
+      </YAxis>
+      <Tooltip
+        contentStyle={{
+          backgroundColor: 'rgba(17, 12, 34, 0.9)',
+          border: '1px solid rgba(147, 51, 234, 0.2)',
+          borderRadius: '8px'
+        }}
+        formatter={(value) => [`₹${value}`, 'Revenue']}
+      />
+      <Area
+        type="monotone"
+        dataKey="amount"
+        stroke="#9333ea"
+        fillOpacity={1}
+        fill="url(#colorRevenue)"
+      />
+    </AreaChart>
+  </ResponsiveContainer>
+);
+
+const CategoryPerformance = ({ data }) => (
+  <div className="category-performance">
+    <h3>Category Performance</h3>
+    <div className="category-grid">
+      {data.map(category => (
+        <div key={category.category} className="category-card">
+          <h4>{category.category}</h4>
+          <div className="category-stats">
+            <div className="stat">
+              <span>Revenue</span>
+              <strong>₹{category.revenue.toLocaleString()}</strong>
+            </div>
+            <div className="stat">
+              <span>Sales</span>
+              <strong>{category.sales}</strong>
+            </div>
+            <div className="stat">
+              <span>Avg. Order</span>
+              <strong>₹{category.averageOrderValue.toLocaleString()}</strong>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
 
 export default Performance;

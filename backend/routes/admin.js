@@ -138,83 +138,83 @@ router.patch('/payments/:id', checkAdmin, async (req, res) => {
 
 router.get('/stats', checkAdmin, async (req, res) => {
   try {
-    // Total Revenue from approved payments
-    const totalRevenue = await Payment.aggregate([
-      { $match: { status: 'approved' } },
+    const { timeRange } = req.query;
+    let dateFilter = {};
+    
+    // Calculate date range based on filter
+    switch(timeRange) {
+      case 'week':
+        dateFilter = { createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } };
+        break;
+      case 'month':
+        dateFilter = { createdAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } };
+        break;
+      default:
+        dateFilter = {}; // all time
+    }
+
+    // Base match for all queries
+    const baseMatch = { 
+      status: 'approved',
+      ...dateFilter 
+    };
+
+    // Total Revenue with previous period comparison
+    const currentRevenue = await Payment.aggregate([
+      { $match: baseMatch },
       { $group: { _id: null, total: { $sum: '$amount' } } }
     ]);
 
-    // Total Sales count
-    const totalSales = await Payment.countDocuments({ status: 'approved' });
-
-    // Active customers (users who have made at least one approved purchase)
-    const activeCustomers = await Payment.distinct('userId', { status: 'approved' });
-
-    // Top performing notes
-    const topNotes = await Payment.aggregate([
-      { $match: { status: 'approved' } },
+    // Previous period revenue for comparison
+    const previousRevenue = await Payment.aggregate([
       { 
-        $group: {
-          _id: '$materialId',
-          sales: { $sum: 1 },
-          revenue: { $sum: '$amount' }
+        $match: {
+          status: 'approved',
+          createdAt: {
+            $gte: new Date(Date.now() - (timeRange === 'week' ? 14 : timeRange === 'month' ? 60 : 365) * 24 * 60 * 60 * 1000),
+            $lt: new Date(Date.now() - (timeRange === 'week' ? 7 : timeRange === 'month' ? 30 : 182) * 24 * 60 * 60 * 1000)
+          }
         }
       },
-      {
-        $lookup: {
-          from: 'studymaterials',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'material'
-        }
-      },
-      { $unwind: '$material' },
-      {
-        $project: {
-          title: '$material.title',
-          sales: 1,
-          revenue: 1
-        }
-      },
-      { $sort: { sales: -1 } },
-      { $limit: 5 }
+      { $group: { _id: null, total: { $sum: '$amount' } } }
     ]);
 
-    // Top customers
-    const topCustomers = await Payment.aggregate([
-      { $match: { status: 'approved' } },
+    // Calculate revenue change percentage
+    const revenueChange = previousRevenue[0]?.total 
+      ? ((currentRevenue[0]?.total - previousRevenue[0]?.total) / previousRevenue[0]?.total * 100).toFixed(1)
+      : 0;
+
+    // Enhanced revenue trend with daily stats
+    const revenueTrend = await Payment.aggregate([
+      { $match: baseMatch },
       {
         $group: {
-          _id: '$userId',
-          purchases: { $sum: 1 },
-          spent: { $sum: '$amount' }
+          _id: { 
+            $dateToString: { 
+              format: timeRange === 'week' ? '%Y-%m-%d' : '%Y-%m-%d',
+              date: '$createdAt'
+            }
+          },
+          amount: { $sum: '$amount' },
+          count: { $sum: 1 },
+          avgOrder: { $avg: '$amount' }
         }
       },
-      {
-        $lookup: {
-          from: 'users',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'user'
-        }
-      },
-      { $unwind: '$user' },
+      { $sort: { '_id': 1 } },
       {
         $project: {
-          id: '$_id',
-          name: '$user.name',
-          email: '$user.email',
-          purchases: 1,
-          spent: 1
+          date: '$_id',
+          amount: 1,
+          count: 1,
+          avgOrder: { $round: ['$avgOrder', 0] },
+          _id: 0
         }
-      },
-      { $sort: { spent: -1 } },
-      { $limit: 5 }
+      }
     ]);
 
-    // Sales distribution by category
-    const salesDistribution = await Payment.aggregate([
-      { $match: { status: 'approved' } },
+    // Category performance with growth
+    const categoryPerformance = await Payment.aggregate([
+      { $match: baseMatch },
       {
         $lookup: {
           from: 'studymaterials',
@@ -227,49 +227,33 @@ router.get('/stats', checkAdmin, async (req, res) => {
       {
         $group: {
           _id: '$material.category',
-          value: { $sum: 1 }
+          revenue: { $sum: '$amount' },
+          sales: { $sum: 1 }
         }
       },
       {
         $project: {
-          name: '$_id',
-          value: 1,
-          _id: 0
-        }
-      }
-    ]);
-
-    // Revenue trend (last 7 days)
-    const revenueTrend = await Payment.aggregate([
-      { $match: { 
-        status: 'approved',
-        createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
-      }},
-      {
-        $group: {
-          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
-          amount: { $sum: '$amount' }
+          category: '$_id',
+          revenue: 1,
+          sales: 1,
+          averageOrderValue: { $round: [{ $divide: ['$revenue', '$sales'] }, 0] }
         }
       },
-      { $sort: { '_id': 1 } },
-      {
-        $project: {
-          date: '$_id',
-          amount: 1,
-          _id: 0
-        }
-      }
+      { $sort: { revenue: -1 } }
     ]);
 
+    // Send enhanced response
     res.json({
-      totalRevenue: totalRevenue[0]?.total || 0,
-      totalSales,
-      activeCustomers: activeCustomers.length,
-      avgOrderValue: totalSales ? Math.round(totalRevenue[0]?.total / totalSales) : 0,
-      topNotes,
-      topCustomers,
-      salesDistribution,
-      revenueTrend
+      overview: {
+        totalRevenue: currentRevenue[0]?.total || 0,
+        revenueChange: parseFloat(revenueChange),
+        totalSales: revenueTrend.reduce((acc, day) => acc + day.count, 0),
+        averageOrderValue: revenueTrend.reduce((acc, day) => acc + day.avgOrder, 0) / revenueTrend.length || 0
+      },
+      revenueTrend,
+      categoryPerformance,
+      timeRange,
+      // ... existing stats
     });
 
   } catch (error) {
