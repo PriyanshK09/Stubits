@@ -11,6 +11,7 @@ import AdminDashboard from "./components/AdminDashboard"
 import AuthPage from "./components/AuthPage"
 import AuthSuccess from './components/AuthSuccess';
 import UserDashboard from "./components/UserDashboard"
+import Donation from "./components/Donation"
 import "./App.css"
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/auth-success" element={<AuthSuccess />} />
           <Route path="/dashboard" element={<UserDashboard />} />
+          <Route path="/donate" element={<Donation />} />
           {/* All other pages redirected to Soon */}
           <Route path="*" element={<Soon />} />
         </Routes>
