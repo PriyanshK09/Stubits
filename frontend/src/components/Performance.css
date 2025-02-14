@@ -264,6 +264,47 @@
   font-size: 1rem;
 }
 
+.loading-state,
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: var(--text-secondary);
+}
+
+.loader {
+  border: 3px solid rgba(147, 51, 234, 0.1);
+  border-radius: 50%;
+  border-top: 3px solid #9333ea;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-state button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(147, 51, 234, 0.1);
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  border-radius: 8px;
+  color: #9333ea;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.error-state button:hover {
+  background: rgba(147, 51, 234, 0.2);
+  border-color: rgba(147, 51, 234, 0.3);
+}
+
 @media (max-width: 1200px) {
   .revenue-trend, .top-notes {
     grid-column: span 1;

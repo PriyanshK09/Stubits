@@ -12,11 +12,13 @@ import './Performance.css';
 const Performance = ({ adminPassword }) => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [timeRange, setTimeRange] = useState('all'); // all, month, week
 
   const fetchStats = useCallback(async () => {
     try {
       setLoading(true);
+      setError(null);
       const response = await fetch(
         `https://stubits.onrender.com/api/admin/stats?timeRange=${timeRange}`,
         {
@@ -25,10 +27,16 @@ const Performance = ({ adminPassword }) => {
           }
         }
       );
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch statistics');
+      }
+
       const data = await response.json();
       setStats(data);
     } catch (error) {
       console.error('Error fetching stats:', error);
+      setError(error.message);
     } finally {
       setLoading(false);
     }
@@ -44,6 +52,17 @@ const Performance = ({ adminPassword }) => {
         <div className="loading-state">
           <div className="loader"></div>
           <p>Loading statistics...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="admin-component-content">
+        <div className="error-state">
+          <p>Error loading statistics: {error}</p>
+          <button onClick={fetchStats}>Retry</button>
         </div>
       </div>
     );

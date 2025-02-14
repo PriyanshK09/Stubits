@@ -242,23 +242,32 @@ router.get('/stats', checkAdmin, async (req, res) => {
       { $sort: { revenue: -1 } }
     ]);
 
-    // Send enhanced response
-    res.json({
+    // Ensure all required data is present before sending response
+    const responseData = {
       overview: {
         totalRevenue: currentRevenue[0]?.total || 0,
-        revenueChange: parseFloat(revenueChange),
-        totalSales: revenueTrend.reduce((acc, day) => acc + day.count, 0),
-        averageOrderValue: revenueTrend.reduce((acc, day) => acc + day.avgOrder, 0) / revenueTrend.length || 0
+        revenueChange: parseFloat(revenueChange || 0),
+        totalSales: revenueTrend?.reduce((acc, day) => acc + (day.count || 0), 0) || 0,
+        averageOrderValue: revenueTrend?.length 
+          ? revenueTrend.reduce((acc, day) => acc + (day.avgOrder || 0), 0) / revenueTrend.length 
+          : 0
       },
-      revenueTrend,
-      categoryPerformance,
-      timeRange,
-      // ... existing stats
-    });
+      revenueTrend: revenueTrend || [],
+      categoryPerformance: categoryPerformance || [],
+      salesDistribution: salesDistribution || [],
+      topNotes: topNotes || [],
+      topCustomers: topCustomers || [],
+      timeRange
+    };
+
+    res.json(responseData);
 
   } catch (error) {
     console.error('Error fetching stats:', error);
-    res.status(500).json({ message: 'Error fetching statistics' });
+    res.status(500).json({ 
+      message: 'Error fetching statistics',
+      error: error.message 
+    });
   }
 });
 
