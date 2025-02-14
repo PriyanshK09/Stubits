@@ -390,21 +390,30 @@ const Performance = ({ adminPassword }) => {
               {donationStats.topDonations?.map((donation, index) => (
                 <div key={donation._id} className="donation-card">
                   <div className="card-header">
-                    <span className="rank">#{index + 1}</span>
+                    <div className="rank-container">
+                      <span className="rank">#{index + 1}</span>
+                      <span className="amount">
+                        <IndianRupee size={16} />
+                        {donation.amount}
+                      </span>
+                    </div>
                     <span className="date">
                       {new Date(donation.createdAt).toLocaleDateString('en-US', {
                         month: 'short',
-                        day: 'numeric'
+                        day: 'numeric',
+                        year: 'numeric'
                       })}
                     </span>
                   </div>
-                  <div className="amount">
-                    <IndianRupee size={16} />
-                    <span>{donation.amount}</span>
-                  </div>
-                  <div className="donor-info">
-                    <p className="name">{donation.name}</p>
-                    <p className="upi">{donation.upiId}</p>
+                  <div className="donor-details">
+                    <div className="donor-name">
+                      <span className="label">Donor:</span>
+                      <span className="value">{donation.name}</span>
+                    </div>
+                    <div className="donor-upi">
+                      <span className="label">UPI ID:</span>
+                      <span className="value">{donation.upiId}</span>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -413,14 +422,14 @@ const Performance = ({ adminPassword }) => {
 
           <div className="recent-donations">
             <h3>Recent Donations</h3>
-            <div className="donations-table">
-              <table>
+            <div className="donations-table-wrapper">
+              <table className="donations-table">
                 <thead>
                   <tr>
                     <th>Date</th>
                     <th>Name</th>
-                    <th>Amount</th>
                     <th>UPI ID</th>
+                    <th>Amount</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -429,18 +438,17 @@ const Performance = ({ adminPassword }) => {
                       <td>
                         {new Date(donation.createdAt).toLocaleDateString('en-US', {
                           month: 'short',
-                          day: 'numeric',
-                          year: 'numeric'
+                          day: 'numeric'
                         })}
                       </td>
                       <td>{donation.name}</td>
+                      <td className="upi-cell">{donation.upiId}</td>
                       <td>
                         <div className="amount">
                           <IndianRupee size={14} />
                           {donation.amount}
                         </div>
                       </td>
-                      <td>{donation.upiId}</td>
                     </tr>
                   ))}
                 </tbody>
