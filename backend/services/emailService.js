@@ -119,5 +119,61 @@ const sendThankYouEmail = async (email) => {
   }
 };
 
-module.exports = { sendThankYouEmail };
-// Email Service
+const sendPaymentStatusEmail = async (userEmail, userName, materialTitle, status, amount) => {
+  const subject = status === 'approved' 
+    ? '🎉 Payment Approved - Your Study Material is Ready!'
+    : '❌ Payment Rejected - Action Required';
+
+  const template = status === 'approved' 
+    ? `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+      <div style="text-align: center; margin-bottom: 30px;">
+        <img src="https://stubits.com/logo.png" alt="Stubits Logo" style="width: 150px;">
+      </div>
+      <h2 style="color: #2d3748; margin-bottom: 20px;">Payment Approved! 🎉</h2>
+      <p style="color: #4a5568; line-height: 1.6;">Dear ${userName},</p>
+      <p style="color: #4a5568; line-height: 1.6;">Great news! Your payment of ₹${amount} for "${materialTitle}" has been approved.</p>
+      <p style="color: #4a5568; line-height: 1.6;">You can now access your study material from your dashboard.</p>
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="https://stubits.com/dashboard" style="background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Access Your Material</a>
+      </div>
+      <p style="color: #718096; font-size: 0.9em;">If you have any questions, feel free to reply to this email.</p>
+      <hr style="border: 1px solid #edf2f7; margin: 20px 0;">
+      <p style="color: #718096; font-size: 0.8em; text-align: center;">© 2025 Stubits. All rights reserved.</p>
+    </div>
+    `
+    : `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+      <div style="text-align: center; margin-bottom: 30px;">
+        <img src="https://stubits.com/logo.png" alt="Stubits Logo" style="width: 150px;">
+      </div>
+      <h2 style="color: #2d3748; margin-bottom: 20px;">Payment Rejected ❌</h2>
+      <p style="color: #4a5568; line-height: 1.6;">Dear ${userName},</p>
+      <p style="color: #4a5568; line-height: 1.6;">We regret to inform you that your payment of ₹${amount} for "${materialTitle}" has been rejected.</p>
+      <p style="color: #4a5568; line-height: 1.6;">This might be due to:</p>
+      <ul style="color: #4a5568; line-height: 1.6;">
+        <li>Incorrect UPI transaction details</li>
+        <li>Payment amount mismatch</li>
+        <li>Transaction verification failed</li>
+      </ul>
+      <p style="color: #4a5568; line-height: 1.6;">Please try making the payment again or contact our support team for assistance.</p>
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="https://stubits.com/support" style="background-color: #DC3545; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Contact Support</a>
+      </div>
+      <p style="color: #718096; font-size: 0.9em;">If you believe this is an error, please reply to this email.</p>
+      <hr style="border: 1px solid #edf2f7; margin: 20px 0;">
+      <p style="color: #718096; font-size: 0.8em; text-align: center;">© 2025 Stubits. All rights reserved.</p>
+    </div>
+    `;
+
+  const mailOptions = {
+    from: `Stubits <${process.env.EMAIL_USER}>`,
+    to: userEmail,
+    subject: subject,
+    html: template
+  };
+
+  await transporter.sendMail(mailOptions);
+};
+
+module.exports = { sendThankYouEmail, sendPaymentStatusEmail };

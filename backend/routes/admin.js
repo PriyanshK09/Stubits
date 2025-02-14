@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const StudyMaterial = require('../models/StudyMaterial');
 const Payment = require('../models/Payment');
+const { sendPaymentStatusEmail } = require('../services/emailService');
 
 // Middleware to check admin auth
 const checkAdmin = (req, res, next) => {
@@ -114,9 +115,22 @@ router.patch('/payments/:id', checkAdmin, async (req, res) => {
       req.params.id,
       { status: req.body.status },
       { new: true }
+    )
+    .populate('userId')
+    .populate('materialId');
+
+    // Send email notification
+    await sendPaymentStatusEmail(
+      payment.userId.email,
+      payment.userId.name,
+      payment.materialId.title,
+      payment.status,
+      payment.amount
     );
+
     res.json(payment);
   } catch (error) {
+    console.error('Payment update error:', error);
     res.status(500).json({ message: 'Error updating payment' });
   }
 });
