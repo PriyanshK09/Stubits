@@ -6,7 +6,8 @@ const PaymentManagement = ({ adminPassword }) => {
   const [payments, setPayments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [processingPayments, setProcessingPayments] = useState(new Set());
+  // Remove unused processingPayments state
+  const [processingPaymentAction, setProcessingPaymentAction] = useState({ id: null, action: null });
 
   const fetchPayments = useCallback(async () => {
     try {
@@ -32,7 +33,7 @@ const PaymentManagement = ({ adminPassword }) => {
 
   const updatePaymentStatus = async (paymentId, status) => {
     try {
-      setProcessingPayments(prev => new Set([...prev, paymentId]));
+      setProcessingPaymentAction({ id: paymentId, action: status });
       
       const response = await fetch(`https://stubits.onrender.com/api/admin/payments/${paymentId}`, {
         method: 'PATCH',
@@ -48,11 +49,7 @@ const PaymentManagement = ({ adminPassword }) => {
     } catch (error) {
       console.error('Error updating payment:', error);
     } finally {
-      setProcessingPayments(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(paymentId);
-        return newSet;
-      });
+      setProcessingPaymentAction({ id: null, action: null });
     }
   };
 
@@ -84,7 +81,9 @@ const PaymentManagement = ({ adminPassword }) => {
           <div className="no-payments">No payments found</div>
         ) : (
           payments.map((payment) => {
-            const isProcessing = processingPayments.has(payment._id);
+            const isProcessingApprove = processingPaymentAction.id === payment._id && processingPaymentAction.action === 'approved';
+            const isProcessingReject = processingPaymentAction.id === payment._id && processingPaymentAction.action === 'rejected';
+            const isAnyProcessing = isProcessingApprove || isProcessingReject;
 
             return (
               <div key={payment._id} className="payment-card">
@@ -123,11 +122,11 @@ const PaymentManagement = ({ adminPassword }) => {
                   {payment.status === 'pending' && (
                     <div className="payment-actions">
                       <button
-                        className={`approve-btn ${isProcessing ? 'processing' : ''}`}
+                        className={`approve-btn ${isProcessingApprove ? 'processing' : ''}`}
                         onClick={() => updatePaymentStatus(payment._id, 'approved')}
-                        disabled={isProcessing}
+                        disabled={isAnyProcessing}
                       >
-                        {isProcessing ? (
+                        {isProcessingApprove ? (
                           <>
                             <RefreshCw size={18} className="spin-icon" />
                             Processing...
@@ -140,11 +139,11 @@ const PaymentManagement = ({ adminPassword }) => {
                         )}
                       </button>
                       <button
-                        className={`reject-btn ${isProcessing ? 'processing' : ''}`}
+                        className={`reject-btn ${isProcessingReject ? 'processing' : ''}`}
                         onClick={() => updatePaymentStatus(payment._id, 'rejected')}
-                        disabled={isProcessing}
+                        disabled={isAnyProcessing}
                       >
-                        {isProcessing ? (
+                        {isProcessingReject ? (
                           <>
                             <RefreshCw size={18} className="spin-icon" />
                             Processing...

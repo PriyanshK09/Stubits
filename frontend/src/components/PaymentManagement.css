@@ -10,6 +10,7 @@
     align-items: center;
     margin-bottom: 3rem;
     position: relative;
+    flex-direction: row; /* Ensure row direction */
   }
   
   .payments-header::after {
@@ -30,6 +31,7 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
     letter-spacing: -0.02em;
+    order: 1; /* Place title first */
   }
   
   .refresh-btn {
@@ -44,6 +46,8 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+    order: 2; /* Place refresh button second */
+    margin-left: auto; /* Push to the right */
   }
   
   .refresh-btn:hover {
@@ -274,9 +278,6 @@
   .payment-actions button.processing {
     opacity: 0.7;
     cursor: not-allowed;
-    background: rgba(147, 51, 234, 0.05);
-    border-color: rgba(147, 51, 234, 0.1);
-    color: var(--text-secondary);
   }
   
   .spin-icon {
@@ -295,6 +296,14 @@
   
   .payment-actions button:disabled {
     pointer-events: none;
+  }
+
+  .payment-actions button:not(.processing) {
+    opacity: 1;
+  }
+
+  .payment-actions button:disabled:not(.processing) {
+    opacity: 0.5;
   }
   
   @media (max-width: 768px) {
