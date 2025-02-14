@@ -25,33 +25,6 @@ const PaymentManagement = ({ adminPassword }) => {
     }
   }, [adminPassword])
 
-  const sendPaymentEmail = async (payment, status) => {
-    try {
-      const response = await fetch('https://stubits.onrender.com/api/payment/confirm', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'adminKey': adminPassword
-        },
-        body: JSON.stringify({
-          email: payment.userId.email,
-          paymentDetails: {
-            materialTitle: payment.materialId.title,
-            amount: payment.amount,
-            status: status,
-            userName: payment.userId.name
-          }
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to send confirmation email');
-      }
-    } catch (error) {
-      console.error('Error sending confirmation email:', error);
-    }
-  };
-
   useEffect(() => {
     fetchPayments()
   }, [fetchPayments])
@@ -60,28 +33,19 @@ const PaymentManagement = ({ adminPassword }) => {
     fetchPayments()
   }
 
-  const updatePaymentStatus = async (payment, status) => {
+  const updatePaymentStatus = async (paymentId, status) => {
     try {
-      const response = await fetch(`https://stubits.onrender.com/api/admin/payments/${payment._id}`, {
+      await fetch(`https://stubits.onrender.com/api/admin/payments/${paymentId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           adminKey: adminPassword,
         },
         body: JSON.stringify({ status }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update payment status');
-      }
-
-      // Send confirmation email after successful status update
-      await sendPaymentEmail(payment, status);
-      
-      // Refresh payments list
-      fetchPayments();
+      })
+      fetchPayments()
     } catch (error) {
-      console.error("Failed to update payment:", error);
+      console.error("Failed to update payment:", error)
     }
   }
 
@@ -155,10 +119,10 @@ const PaymentManagement = ({ adminPassword }) => {
                 </div>
                 {payment.status === "pending" && (
                   <div className="payment-actions">
-                    <button className="approve-btn" onClick={() => updatePaymentStatus(payment, "approved")}>
+                    <button className="approve-btn" onClick={() => updatePaymentStatus(payment._id, "approved")}>
                       <Check size={18} /> Approve Payment
                     </button>
-                    <button className="reject-btn" onClick={() => updatePaymentStatus(payment, "rejected")}>
+                    <button className="reject-btn" onClick={() => updatePaymentStatus(payment._id, "rejected")}>
                       <X size={18} /> Reject Payment
                     </button>
                   </div>
@@ -174,4 +138,3 @@ const PaymentManagement = ({ adminPassword }) => {
 }
 
 export default PaymentManagement
-
