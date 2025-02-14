@@ -45,6 +45,25 @@ const Performance = ({ adminPassword }) => {
     );
   }
 
+  if (!stats || !stats.salesDistribution) {
+    return (
+      <div className="admin-component-content">
+        <div className="loading-state">
+          <div className="loader"></div>
+          <p>Loading statistics...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Ensure data exists before rendering charts
+  const hasData = {
+    salesDistribution: Array.isArray(stats.salesDistribution) && stats.salesDistribution.length > 0,
+    revenueTrend: Array.isArray(stats.revenueTrend) && stats.revenueTrend.length > 0,
+    topNotes: Array.isArray(stats.topNotes) && stats.topNotes.length > 0,
+    topCustomers: Array.isArray(stats.topCustomers) && stats.topCustomers.length > 0
+  };
+
   const COLORS = ['#9333ea', '#7928ca', '#4c1d95', '#2e1065'];
 
   return (
@@ -139,62 +158,68 @@ const Performance = ({ adminPassword }) => {
         {/* Revenue Trend Chart */}
         <div className="chart-card revenue-trend">
           <h3>Revenue Trend</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={stats?.revenueTrend}>
-              <defs>
-                <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#9333ea" stopOpacity={0.2}/>
-                  <stop offset="95%" stopColor="#9333ea" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(147, 51, 234, 0.1)" />
-              <XAxis dataKey="date" stroke="#94A3B8" />
-              <YAxis stroke="#94A3B8" />
-              <Tooltip />
-              <Area 
-                type="monotone" 
-                dataKey="amount" 
-                stroke="#9333ea" 
-                fillOpacity={1} 
-                fill="url(#colorRevenue)" 
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+          {hasData.revenueTrend && (
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart data={stats?.revenueTrend}>
+                <defs>
+                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#9333ea" stopOpacity={0.2}/>
+                    <stop offset="95%" stopColor="#9333ea" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(147, 51, 234, 0.1)" />
+                <XAxis dataKey="date" stroke="#94A3B8" />
+                <YAxis stroke="#94A3B8" />
+                <Tooltip />
+                <Area 
+                  type="monotone" 
+                  dataKey="amount" 
+                  stroke="#9333ea" 
+                  fillOpacity={1} 
+                  fill="url(#colorRevenue)" 
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          )}
         </div>
 
         {/* Top Performing Notes */}
         <div className="chart-card top-notes">
           <h3>Top Performing Notes</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={stats?.topNotes}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(147, 51, 234, 0.1)" />
-              <XAxis dataKey="title" stroke="#94A3B8" />
-              <YAxis stroke="#94A3B8" />
-              <Tooltip />
-              <Bar dataKey="sales" fill="#9333ea" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+          {hasData.topNotes && (
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={stats?.topNotes}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(147, 51, 234, 0.1)" />
+                <XAxis dataKey="title" stroke="#94A3B8" />
+                <YAxis stroke="#94A3B8" />
+                <Tooltip />
+                <Bar dataKey="sales" fill="#9333ea" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </div>
 
         {/* Sales Distribution */}
         <div className="chart-card sales-distribution">
           <h3>Sales Distribution</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={stats?.salesDistribution}
-                innerRadius={60}
-                outerRadius={80}
-                paddingAngle={5}
-                dataKey="value"
-              >
-                {stats?.salesDistribution.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+          {hasData.salesDistribution && (
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={stats?.salesDistribution}
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  {stats?.salesDistribution.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
           <div className="chart-legend">
             {stats?.salesDistribution.map((item, index) => (
               <div key={item.name} className="legend-item">
@@ -210,7 +235,7 @@ const Performance = ({ adminPassword }) => {
         <div className="top-customers-card">
           <h3>Top Customers</h3>
           <div className="customers-list">
-            {stats?.topCustomers.map((customer, index) => (
+            {hasData.topCustomers && stats?.topCustomers.map((customer, index) => (
               <div key={customer.id} className="customer-item">
                 <div className="customer-rank">
                   {index === 0 && <Award className="rank-icon gold" />}

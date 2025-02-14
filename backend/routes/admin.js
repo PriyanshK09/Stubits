@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const StudyMaterial = require('../models/StudyMaterial');
 const Payment = require('../models/Payment');
+const User = require('../models/User'); // Add this import
 const { sendPaymentStatusEmail } = require('../services/emailService');
 
 // Middleware to check admin auth
@@ -137,43 +138,140 @@ router.patch('/payments/:id', checkAdmin, async (req, res) => {
 
 router.get('/stats', checkAdmin, async (req, res) => {
   try {
+    // Total Revenue from approved payments
     const totalRevenue = await Payment.aggregate([
       { $match: { status: 'approved' } },
       { $group: { _id: null, total: { $sum: '$amount' } } }
     ]);
 
+    // Total Sales count
     const totalSales = await Payment.countDocuments({ status: 'approved' });
-    const activeCustomers = await User.countDocuments({ 'purchases.0': { $exists: true } });
-    
+
+    // Active customers (users who have made at least one approved purchase)
+    const activeCustomers = await Payment.distinct('userId', { status: 'approved' });
+
+    // Top performing notes
     const topNotes = await Payment.aggregate([
       { $match: { status: 'approved' } },
-      { $group: { 
-        _id: '$materialId',
-        sales: { $sum: 1 }
-      }},
-      { $lookup: {
-        from: 'studymaterials',
-        localField: '_id',
-        foreignField: '_id',
-        as: 'material'
-      }},
+      { 
+        $group: {
+          _id: '$materialId',
+          sales: { $sum: 1 },
+          revenue: { $sum: '$amount' }
+        }
+      },
+      {
+        $lookup: {
+          from: 'studymaterials',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'material'
+        }
+      },
       { $unwind: '$material' },
-      { $project: {
-        title: '$material.title',
-        sales: 1
-      }},
+      {
+        $project: {
+          title: '$material.title',
+          sales: 1,
+          revenue: 1
+        }
+      },
       { $sort: { sales: -1 } },
       { $limit: 5 }
     ]);
 
-    // Send the compiled stats
+    // Top customers
+    const topCustomers = await Payment.aggregate([
+      { $match: { status: 'approved' } },
+      {
+        $group: {
+          _id: '$userId',
+          purchases: { $sum: 1 },
+          spent: { $sum: '$amount' }
+        }
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'user'
+        }
+      },
+      { $unwind: '$user' },
+      {
+        $project: {
+          id: '$_id',
+          name: '$user.name',
+          email: '$user.email',
+          purchases: 1,
+          spent: 1
+        }
+      },
+      { $sort: { spent: -1 } },
+      { $limit: 5 }
+    ]);
+
+    // Sales distribution by category
+    const salesDistribution = await Payment.aggregate([
+      { $match: { status: 'approved' } },
+      {
+        $lookup: {
+          from: 'studymaterials',
+          localField: 'materialId',
+          foreignField: '_id',
+          as: 'material'
+        }
+      },
+      { $unwind: '$material' },
+      {
+        $group: {
+          _id: '$material.category',
+          value: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          name: '$_id',
+          value: 1,
+          _id: 0
+        }
+      }
+    ]);
+
+    // Revenue trend (last 7 days)
+    const revenueTrend = await Payment.aggregate([
+      { $match: { 
+        status: 'approved',
+        createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
+      }},
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          amount: { $sum: '$amount' }
+        }
+      },
+      { $sort: { '_id': 1 } },
+      {
+        $project: {
+          date: '$_id',
+          amount: 1,
+          _id: 0
+        }
+      }
+    ]);
+
     res.json({
       totalRevenue: totalRevenue[0]?.total || 0,
       totalSales,
-      activeCustomers,
-      avgOrderValue: totalRevenue[0] ? Math.round(totalRevenue[0].total / totalSales) : 0,
-      // Add other stats...
+      activeCustomers: activeCustomers.length,
+      avgOrderValue: totalSales ? Math.round(totalRevenue[0]?.total / totalSales) : 0,
+      topNotes,
+      topCustomers,
+      salesDistribution,
+      revenueTrend
     });
+
   } catch (error) {
     console.error('Error fetching stats:', error);
     res.status(500).json({ message: 'Error fetching statistics' });
