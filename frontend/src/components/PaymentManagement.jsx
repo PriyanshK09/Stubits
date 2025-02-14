@@ -53,93 +53,6 @@ const PaymentManagement = ({ adminPassword }) => {
     }
   };
 
-  const renderPaymentCard = (payment) => {
-    // Add null checks for payment and its properties
-    if (!payment || !payment.materialId || !payment.userId) {
-      return null;
-    }
-
-    const isProcessingApprove = processingPaymentAction.id === payment._id && processingPaymentAction.action === 'approved';
-    const isProcessingReject = processingPaymentAction.id === payment._id && processingPaymentAction.action === 'rejected';
-    const isAnyProcessing = isProcessingApprove || isProcessingReject;
-
-    return (
-      <div key={payment._id} className="payment-card">
-        <div className="payment-info">
-          <div className="payment-header">
-            <div className="payment-title">
-              <h3>{payment.materialId.title}</h3>
-              <span className={`status ${payment.status}`}>
-                {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
-              </span>
-            </div>
-            <div className="payment-amount">
-              <span>₹{payment.amount}</span>
-            </div>
-          </div>
-
-          <div className="info-grid">
-            <div className="info-item">
-              <label>Student Name</label>
-              <span>{payment.userId.name}</span>
-            </div>
-            <div className="info-item">
-              <label>Student Email</label>
-              <span>{payment.userId.email}</span>
-            </div>
-            <div className="info-item">
-              <label>UPI ID</label>
-              <span>{payment.userUpi}</span>
-            </div>
-            <div className="info-item">
-              <label>Date</label>
-              <span>{new Date(payment.createdAt).toLocaleDateString()}</span>
-            </div>
-          </div>
-
-          {payment.status === 'pending' && (
-            <div className="payment-actions">
-              <button
-                className={`approve-btn ${isProcessingApprove ? 'processing' : ''}`}
-                onClick={() => updatePaymentStatus(payment._id, 'approved')}
-                disabled={isAnyProcessing}
-              >
-                {isProcessingApprove ? (
-                  <>
-                    <RefreshCw size={18} className="spin-icon" />
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <Check size={18} />
-                    Approve Payment
-                  </>
-                )}
-              </button>
-              <button
-                className={`reject-btn ${isProcessingReject ? 'processing' : ''}`}
-                onClick={() => updatePaymentStatus(payment._id, 'rejected')}
-                disabled={isAnyProcessing}
-              >
-                {isProcessingReject ? (
-                  <>
-                    <RefreshCw size={18} className="spin-icon" />
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <X size={18} />
-                    Reject Payment
-                  </>
-                )}
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
-
   if (isLoading) {
     return (
       <div className="payments-loading">
@@ -167,7 +80,87 @@ const PaymentManagement = ({ adminPassword }) => {
         {payments.length === 0 ? (
           <div className="no-payments">No payments found</div>
         ) : (
-          payments.map(payment => renderPaymentCard(payment))
+          payments.map((payment) => {
+            const isProcessingApprove = processingPaymentAction.id === payment._id && processingPaymentAction.action === 'approved';
+            const isProcessingReject = processingPaymentAction.id === payment._id && processingPaymentAction.action === 'rejected';
+            const isAnyProcessing = isProcessingApprove || isProcessingReject;
+
+            return (
+              <div key={payment._id} className="payment-card">
+                <div className="payment-info">
+                  <div className="payment-header">
+                    <div className="payment-title">
+                      <h3>{payment.materialId.title}</h3>
+                      <span className={`status ${payment.status}`}>
+                        {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
+                      </span>
+                    </div>
+                    <div className="payment-amount">
+                      <span>₹{payment.amount}</span>
+                    </div>
+                  </div>
+
+                  <div className="info-grid">
+                    <div className="info-item">
+                      <label>Student Name</label>
+                      <span>{payment.userId.name}</span>
+                    </div>
+                    <div className="info-item">
+                      <label>Student Email</label>
+                      <span>{payment.userId.email}</span>
+                    </div>
+                    <div className="info-item">
+                      <label>UPI ID</label>
+                      <span>{payment.userUpi}</span>
+                    </div>
+                    <div className="info-item">
+                      <label>Date</label>
+                      <span>{new Date(payment.createdAt).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+
+                  {payment.status === 'pending' && (
+                    <div className="payment-actions">
+                      <button
+                        className={`approve-btn ${isProcessingApprove ? 'processing' : ''}`}
+                        onClick={() => updatePaymentStatus(payment._id, 'approved')}
+                        disabled={isAnyProcessing}
+                      >
+                        {isProcessingApprove ? (
+                          <>
+                            <RefreshCw size={18} className="spin-icon" />
+                            Processing...
+                          </>
+                        ) : (
+                          <>
+                            <Check size={18} />
+                            Approve Payment
+                          </>
+                        )}
+                      </button>
+                      <button
+                        className={`reject-btn ${isProcessingReject ? 'processing' : ''}`}
+                        onClick={() => updatePaymentStatus(payment._id, 'rejected')}
+                        disabled={isAnyProcessing}
+                      >
+                        {isProcessingReject ? (
+                          <>
+                            <RefreshCw size={18} className="spin-icon" />
+                            Processing...
+                          </>
+                        ) : (
+                          <>
+                            <X size={18} />
+                            Reject Payment
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })
         )}
       </div>
     </div>
