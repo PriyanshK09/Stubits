@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import { 
   Heart, Coffee, Book,  
-  Star, GraduationCap, IndianRupee 
+  Star, GraduationCap, IndianRupee,
+  QrCode
 } from "lucide-react"
 import "./Donation.css"
 
@@ -26,13 +27,15 @@ const donationOptions = [
   }
 ]
 
+const UPI_ID = "payment@stubits"; // Replace with your actual UPI ID
+
 const Donation = () => {
-  const [selectedAmount, setSelectedAmount] = useState(null)
-  const [customAmount, setCustomAmount] = useState("")
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [upiId, setUpiId] = useState("")
-  const [message, setMessage] = useState("")
+  const [selectedAmount, setSelectedAmount] = useState(null);
+  const [customAmount, setCustomAmount] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [upiId, setUpiId] = useState("");
+  const [message, setMessage] = useState("");
   const [touched, setTouched] = useState({
     name: false,
     email: false,
@@ -159,6 +162,38 @@ const Donation = () => {
               }}
               min="1"
             />
+          </div>
+        </div>
+
+        <div className="donation-qr-section">
+          <div className="qr-container">
+            <div className="qr-header">
+              <QrCode size={24} />
+              <h3>Scan & Pay</h3>
+            </div>
+            <div className="qr-code">
+              <img 
+                src="/images/upiqr.jpg"
+                alt="UPI QR Code"
+                width="200"
+                height="200"
+              />
+            </div>
+            <div className="upi-details">
+              <div className="upi-id-display">
+                <span className="label">UPI ID:</span>
+                <span className="value">{UPI_ID}</span>
+                <button 
+                  className="copy-btn"
+                  onClick={() => {
+                    navigator.clipboard.writeText(UPI_ID);
+                    alert('UPI ID copied to clipboard!');
+                  }}
+                >
+                  Copy
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
