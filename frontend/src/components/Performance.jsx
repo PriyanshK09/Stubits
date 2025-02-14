@@ -35,10 +35,7 @@ const Performance = ({ adminPassword }) => {
       }
 
       const data = await response.json();
-      if (!data || typeof data !== 'object') {
-        throw new Error('Invalid data received from server');
-      }
-
+      console.log('Fetched stats:', data); // Debug log
       setStats(data);
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -50,7 +47,7 @@ const Performance = ({ adminPassword }) => {
 
   useEffect(() => {
     fetchStats();
-  }, [fetchStats, timeRange]);
+  }, [fetchStats]);
 
   if (loading) {
     return (
