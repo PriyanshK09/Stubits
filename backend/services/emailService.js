@@ -125,9 +125,12 @@ const sendPaymentStatusEmail = async (userEmail, userName, materialTitle, status
     ? `
     <div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #110C22; border-radius: 20px; border: 1px solid rgba(147, 51, 234, 0.2);">
       <div style="text-align: center; margin-bottom: 30px;">
-        <img src="data:image/png;base64,${Buffer.from(require('fs').readFileSync('public/images/logo.png')).toString('base64')}" alt="Stubits Logo" style="width: 150px;">
+        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-01-27%20at%2021.16.27_5fe7b30d-Photoroom-PGmOIIP1qxx8q6FGrmXjWeQ3tYTMFR.png" 
+             alt="Stubits Logo" 
+             style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 24px; border: 3px solid #9333ea;"
+        >
       </div>
-      <h2 style="color: #FFFFFF; margin-bottom: 20px; font-size: 24px; background: linear-gradient(135deg, #9333ea 0%, #7928ca 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Payment Approved! 🎉</h2>
+      <h2 style="color: #FFFFFF; margin-bottom: 20px; font-size: 24px;">Payment Approved! 🎉</h2>
       <div style="background: rgba(147, 51, 234, 0.1); border-radius: 16px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(147, 51, 234, 0.2);">
         <p style="color: #E2E8F0; line-height: 1.6;">Dear ${userName},</p>
         <p style="color: #E2E8F0; line-height: 1.6;">Your payment of ₹${amount} for "${materialTitle}" has been approved!</p>
@@ -144,7 +147,10 @@ const sendPaymentStatusEmail = async (userEmail, userName, materialTitle, status
     : `
     <div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #110C22; border-radius: 20px; border: 1px solid rgba(239, 68, 68, 0.2);">
       <div style="text-align: center; margin-bottom: 30px;">
-        <img src="data:image/png;base64,${Buffer.from(require('fs').readFileSync('public/images/logo.png')).toString('base64')}" alt="Stubits Logo" style="width: 150px;">
+        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-01-27%20at%2021.16.27_5fe7b30d-Photoroom-PGmOIIP1qxx8q6FGrmXjWeQ3tYTMFR.png" 
+             alt="Stubits Logo" 
+             style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 24px; border: 3px solid #9333ea;"
+        >
       </div>
       <h2 style="color: #FFFFFF; margin-bottom: 20px; font-size: 24px;">Payment Rejected ❌</h2>
       <div style="background: rgba(239, 68, 68, 0.1); border-radius: 16px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(239, 68, 68, 0.2);">
