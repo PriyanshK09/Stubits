@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { 
-  Heart, Coffee, Book, Lightbulb, DollarSign, 
-  Star, GraduationCap 
+  Heart, Coffee, Book,  
+  Star, GraduationCap, IndianRupee 
 } from "lucide-react"
 import "./Donation.css"
 
@@ -20,12 +20,6 @@ const donationOptions = [
   },
   { 
     amount: 1000, 
-    icon: Lightbulb, 
-    label: "Fuel innovation",
-    description: "Support the development of new learning features"
-  },
-  { 
-    amount: 5000, 
     icon: Heart, 
     label: "Become a hero",
     description: "Make a significant impact on student education"
@@ -37,12 +31,25 @@ const Donation = () => {
   const [customAmount, setCustomAmount] = useState("")
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
+  const [upiId, setUpiId] = useState("")
   const [message, setMessage] = useState("")
+  const [touched, setTouched] = useState({
+    name: false,
+    email: false,
+    upi: false
+  });
+  const [showErrors, setShowErrors] = useState(false);
 
   const handleDonation = async (e) => {
-    e.preventDefault()
-    // Add your donation processing logic here
-  }
+    e.preventDefault();
+    setShowErrors(true);
+    const finalAmount = selectedAmount || Number(customAmount);
+    if (!finalAmount || !upiId) {
+      alert("Please select an amount and enter UPI ID");
+      return;
+    }
+    // Add your UPI payment logic here
+  };
 
   return (
     <div className="donation-container">
@@ -77,13 +84,19 @@ const Donation = () => {
             <button
               key={option.amount}
               className={`donation-option ${selectedAmount === option.amount ? 'active' : ''}`}
-              onClick={() => setSelectedAmount(option.amount)}
+              onClick={() => {
+                setSelectedAmount(option.amount)
+                setCustomAmount("")
+              }}
             >
               <option.icon className="option-icon" />
               <div className="option-content">
                 <h3>{option.label}</h3>
                 <p>{option.description}</p>
-                <span className="amount">₹{option.amount}</span>
+                <span className="amount">
+                  <IndianRupee className="rupee-icon" size={18} />
+                  {option.amount}
+                </span>
               </div>
             </button>
           ))}
@@ -91,7 +104,7 @@ const Donation = () => {
 
         <div className="custom-donation">
           <div className="custom-amount">
-            <DollarSign className="currency-icon" />
+            <IndianRupee className="currency-icon" />
             <input
               type="number"
               placeholder="Enter custom amount"
@@ -100,39 +113,75 @@ const Donation = () => {
                 setCustomAmount(e.target.value)
                 setSelectedAmount(null)
               }}
+              min="1"
             />
           </div>
         </div>
 
         <form onSubmit={handleDonation} className="donation-form">
+          <div className="form-grid">
+            <div className="form-group">
+              <label htmlFor="name">Name</label>
+              <input
+                id="name"
+                type="text"
+                placeholder="Enter your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                onBlur={() => setTouched(prev => ({ ...prev, name: true }))}
+                className={`${touched.name || showErrors ? 'show-error' : ''}`}
+                required
+              />
+              <span className="error-message">Please enter your name</span>
+            </div>
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                id="email"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onBlur={() => setTouched(prev => ({ ...prev, email: true }))}
+                className={`${touched.email || showErrors ? 'show-error' : ''}`}
+                required
+              />
+              <span className="error-message">Please enter a valid email address</span>
+            </div>
+          </div>
           <div className="form-group">
+            <label htmlFor="upi">UPI ID</label>
             <input
+              id="upi"
               type="text"
-              placeholder="Your Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter your UPI ID (e.g., name@upi)"
+              value={upiId}
+              onChange={(e) => setUpiId(e.target.value)}
+              onBlur={() => setTouched(prev => ({ ...prev, upi: true }))}
+              className={`${touched.upi || showErrors ? 'show-error' : ''}`}
               required
+              pattern="[a-zA-Z0-9\.\-\_]+@[a-zA-Z][a-zA-Z]+"
+              title="Please enter a valid UPI ID (e.g., name@upi)"
             />
+            <span className="error-message">Please enter a valid UPI ID</span>
           </div>
           <div className="form-group">
-            <input
-              type="email"
-              placeholder="Your Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="form-group">
+            <label htmlFor="message">Message (Optional)</label>
             <textarea
-              placeholder="Leave a message (optional)"
+              id="message"
+              placeholder="Leave a message..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
+              rows="3"
             />
           </div>
-          <button type="submit" className="donate-btn">
+          <button 
+            type="submit" 
+            className="donate-btn"
+            disabled={!((selectedAmount || customAmount) && upiId)}
+          >
             <Heart className="btn-icon" />
-            Make Donation
+            Proceed to Pay
           </button>
         </form>
       </div>
