@@ -19,6 +19,7 @@ const Performance = ({ adminPassword }) => {
     try {
       setLoading(true);
       setError(null);
+      
       const response = await fetch(
         `https://stubits.onrender.com/api/admin/stats?timeRange=${timeRange}`,
         {
@@ -29,10 +30,15 @@ const Performance = ({ adminPassword }) => {
       );
 
       if (!response.ok) {
-        throw new Error('Failed to fetch statistics');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to fetch statistics');
       }
 
       const data = await response.json();
+      if (!data || typeof data !== 'object') {
+        throw new Error('Invalid data received from server');
+      }
+
       setStats(data);
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -68,12 +74,12 @@ const Performance = ({ adminPassword }) => {
     );
   }
 
-  if (!stats || !stats.salesDistribution) {
+  if (!stats || !stats.overview) {
     return (
       <div className="admin-component-content">
         <div className="loading-state">
           <div className="loader"></div>
-          <p>Loading statistics...</p>
+          <p>Initializing dashboard...</p>
         </div>
       </div>
     );
@@ -120,71 +126,75 @@ const Performance = ({ adminPassword }) => {
 
       <div className="stats-grid">
         {/* Quick Stats Cards */}
-        <div className="quick-stats">
-          <div className="stat-card total-revenue">
-            <div className="stat-icon">
-              <IndianRupee size={24} />
+        {stats.overview && (
+          <div className="quick-stats">
+            <div className="stat-card total-revenue">
+              <div className="stat-icon">
+                <IndianRupee size={24} />
+              </div>
+              <div className="stat-info">
+                <h3>Total Revenue</h3>
+                <p className="stat-value">₹{stats?.totalRevenue}</p>
+                <span className="stat-change positive">
+                  <ArrowUp size={16} />
+                  12.5% vs last period
+                </span>
+              </div>
             </div>
-            <div className="stat-info">
-              <h3>Total Revenue</h3>
-              <p className="stat-value">₹{stats?.totalRevenue}</p>
-              <span className="stat-change positive">
-                <ArrowUp size={16} />
-                12.5% vs last period
-              </span>
-            </div>
-          </div>
 
-          <div className="stat-card total-sales">
-            <div className="stat-icon">
-              <FileText size={24} />
+            <div className="stat-card total-sales">
+              <div className="stat-icon">
+                <FileText size={24} />
+              </div>
+              <div className="stat-info">
+                <h3>Total Sales</h3>
+                <p className="stat-value">{stats?.totalSales}</p>
+                <span className="stat-change positive">
+                  <ArrowUp size={16} />
+                  8.2% vs last period
+                </span>
+              </div>
             </div>
-            <div className="stat-info">
-              <h3>Total Sales</h3>
-              <p className="stat-value">{stats?.totalSales}</p>
-              <span className="stat-change positive">
-                <ArrowUp size={16} />
-                8.2% vs last period
-              </span>
-            </div>
-          </div>
 
-          <div className="stat-card active-customers">
-            <div className="stat-icon">
-              <Users size={24} />
+            <div className="stat-card active-customers">
+              <div className="stat-icon">
+                <Users size={24} />
+              </div>
+              <div className="stat-info">
+                <h3>Active Customers</h3>
+                <p className="stat-value">{stats?.activeCustomers}</p>
+                <span className="stat-change negative">
+                  <ArrowDown size={16} />
+                  3.1% vs last period
+                </span>
+              </div>
             </div>
-            <div className="stat-info">
-              <h3>Active Customers</h3>
-              <p className="stat-value">{stats?.activeCustomers}</p>
-              <span className="stat-change negative">
-                <ArrowDown size={16} />
-                3.1% vs last period
-              </span>
-            </div>
-          </div>
 
-          <div className="stat-card avg-order">
-            <div className="stat-icon">
-              <TrendingUp size={24} />
-            </div>
-            <div className="stat-info">
-              <h3>Avg. Order Value</h3>
-              <p className="stat-value">₹{stats?.avgOrderValue}</p>
-              <span className="stat-change positive">
-                <ArrowUp size={16} />
-                5.7% vs last period
-              </span>
+            <div className="stat-card avg-order">
+              <div className="stat-icon">
+                <TrendingUp size={24} />
+              </div>
+              <div className="stat-info">
+                <h3>Avg. Order Value</h3>
+                <p className="stat-value">₹{stats?.avgOrderValue}</p>
+                <span className="stat-change positive">
+                  <ArrowUp size={16} />
+                  5.7% vs last period
+                </span>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Revenue Trend Chart */}
-        <div className="chart-card revenue-trend">
-          <h3>Revenue Trend</h3>
-          {hasData.revenueTrend && (
-            <RevenueChart data={stats?.revenueTrend} />
-          )}
-        </div>
+        {stats.revenueTrend && stats.revenueTrend.length > 0 && (
+          <div className="chart-card revenue-trend">
+            <h3>Revenue Trend</h3>
+            {hasData.revenueTrend && (
+              <RevenueChart data={stats?.revenueTrend} />
+            )}
+          </div>
+        )}
 
         {/* Top Performing Notes */}
         <div className="chart-card top-notes">
@@ -203,36 +213,38 @@ const Performance = ({ adminPassword }) => {
         </div>
 
         {/* Sales Distribution */}
-        <div className="chart-card sales-distribution">
-          <h3>Sales Distribution</h3>
-          {hasData.salesDistribution && (
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={stats?.salesDistribution}
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {stats?.salesDistribution.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          )}
-          <div className="chart-legend">
-            {stats?.salesDistribution.map((item, index) => (
-              <div key={item.name} className="legend-item">
-                <span className="legend-color" style={{ backgroundColor: COLORS[index % COLORS.length] }}></span>
-                <span className="legend-label">{item.name}</span>
-                <span className="legend-value">{item.value}%</span>
-              </div>
-            ))}
+        {stats.salesDistribution && stats.salesDistribution.length > 0 && (
+          <div className="chart-card sales-distribution">
+            <h3>Sales Distribution</h3>
+            {hasData.salesDistribution && (
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={stats?.salesDistribution}
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {stats?.salesDistribution.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            )}
+            <div className="chart-legend">
+              {stats?.salesDistribution.map((item, index) => (
+                <div key={item.name} className="legend-item">
+                  <span className="legend-color" style={{ backgroundColor: COLORS[index % COLORS.length] }}></span>
+                  <span className="legend-label">{item.name}</span>
+                  <span className="legend-value">{item.value}%</span>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Top Customers */}
         <div className="top-customers-card">

@@ -159,61 +159,47 @@ router.get('/stats', checkAdmin, async (req, res) => {
       ...dateFilter 
     };
 
-    // Total Revenue with previous period comparison
-    const currentRevenue = await Payment.aggregate([
+    // Get basic stats
+    const totalRevenue = await Payment.aggregate([
       { $match: baseMatch },
       { $group: { _id: null, total: { $sum: '$amount' } } }
     ]);
 
-    // Previous period revenue for comparison
-    const previousRevenue = await Payment.aggregate([
-      { 
-        $match: {
-          status: 'approved',
-          createdAt: {
-            $gte: new Date(Date.now() - (timeRange === 'week' ? 14 : timeRange === 'month' ? 60 : 365) * 24 * 60 * 60 * 1000),
-            $lt: new Date(Date.now() - (timeRange === 'week' ? 7 : timeRange === 'month' ? 30 : 182) * 24 * 60 * 60 * 1000)
-          }
-        }
-      },
-      { $group: { _id: null, total: { $sum: '$amount' } } }
-    ]);
+    const totalSales = await Payment.countDocuments(baseMatch);
+    const activeCustomers = await Payment.distinct('userId', baseMatch);
 
-    // Calculate revenue change percentage
-    const revenueChange = previousRevenue[0]?.total 
-      ? ((currentRevenue[0]?.total - previousRevenue[0]?.total) / previousRevenue[0]?.total * 100).toFixed(1)
-      : 0;
-
-    // Enhanced revenue trend with daily stats
-    const revenueTrend = await Payment.aggregate([
+    // Get top notes
+    const topNotes = await Payment.aggregate([
       { $match: baseMatch },
       {
         $group: {
-          _id: { 
-            $dateToString: { 
-              format: timeRange === 'week' ? '%Y-%m-%d' : '%Y-%m-%d',
-              date: '$createdAt'
-            }
-          },
-          amount: { $sum: '$amount' },
-          count: { $sum: 1 },
-          avgOrder: { $avg: '$amount' }
+          _id: '$materialId',
+          sales: { $sum: 1 },
+          revenue: { $sum: '$amount' }
         }
       },
-      { $sort: { '_id': 1 } },
+      {
+        $lookup: {
+          from: 'studymaterials',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'material'
+        }
+      },
+      { $unwind: '$material' },
       {
         $project: {
-          date: '$_id',
-          amount: 1,
-          count: 1,
-          avgOrder: { $round: ['$avgOrder', 0] },
-          _id: 0
+          title: '$material.title',
+          sales: 1,
+          revenue: 1
         }
-      }
+      },
+      { $sort: { sales: -1 } },
+      { $limit: 5 }
     ]);
 
-    // Category performance with growth
-    const categoryPerformance = await Payment.aggregate([
+    // Sales distribution
+    const salesDistribution = await Payment.aggregate([
       { $match: baseMatch },
       {
         $lookup: {
@@ -227,36 +213,52 @@ router.get('/stats', checkAdmin, async (req, res) => {
       {
         $group: {
           _id: '$material.category',
-          revenue: { $sum: '$amount' },
-          sales: { $sum: 1 }
+          value: { $sum: 1 }
         }
       },
       {
         $project: {
-          category: '$_id',
-          revenue: 1,
-          sales: 1,
-          averageOrderValue: { $round: [{ $divide: ['$revenue', '$sales'] }, 0] }
+          name: '$_id',
+          value: 1,
+          _id: 0
         }
-      },
-      { $sort: { revenue: -1 } }
+      }
     ]);
 
-    // Ensure all required data is present before sending response
+    // Revenue trend
+    const revenueTrend = await Payment.aggregate([
+      { $match: baseMatch },
+      {
+        $group: {
+          _id: {
+            $dateToString: {
+              format: '%Y-%m-%d',
+              date: '$createdAt'
+            }
+          },
+          amount: { $sum: '$amount' }
+        }
+      },
+      { $sort: { '_id': 1 } },
+      {
+        $project: {
+          date: '$_id',
+          amount: 1,
+          _id: 0
+        }
+      }
+    ]);
+
     const responseData = {
       overview: {
-        totalRevenue: currentRevenue[0]?.total || 0,
-        revenueChange: parseFloat(revenueChange || 0),
-        totalSales: revenueTrend?.reduce((acc, day) => acc + (day.count || 0), 0) || 0,
-        averageOrderValue: revenueTrend?.length 
-          ? revenueTrend.reduce((acc, day) => acc + (day.avgOrder || 0), 0) / revenueTrend.length 
-          : 0
+        totalRevenue: totalRevenue[0]?.total || 0,
+        totalSales: totalSales || 0,
+        activeCustomers: activeCustomers?.length || 0,
+        averageOrderValue: totalSales ? (totalRevenue[0]?.total || 0) / totalSales : 0
       },
-      revenueTrend: revenueTrend || [],
-      categoryPerformance: categoryPerformance || [],
-      salesDistribution: salesDistribution || [],
       topNotes: topNotes || [],
-      topCustomers: topCustomers || [],
+      salesDistribution: salesDistribution || [],
+      revenueTrend: revenueTrend || [],
       timeRange
     };
 
@@ -264,9 +266,9 @@ router.get('/stats', checkAdmin, async (req, res) => {
 
   } catch (error) {
     console.error('Error fetching stats:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: 'Error fetching statistics',
-      error: error.message 
+      error: error.message
     });
   }
 });
