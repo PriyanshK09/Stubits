@@ -6,10 +6,6 @@ const UserDashboard = () => {
   const [purchases, setPurchases] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchPurchases();
-  }, []);
-
   const fetchPurchases = async () => {
     try {
       const response = await fetch('https://stubits.onrender.com/api/payments/my', {
@@ -18,12 +14,70 @@ const UserDashboard = () => {
         }
       });
       const data = await response.json();
-      setPurchases(data);
+      // Filter out purchases with null materialId
+      const validPurchases = data.filter(purchase => purchase.materialId !== null);
+      setPurchases(validPurchases);
     } catch (error) {
       console.error('Failed to fetch purchases:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    fetchPurchases();
+  }, []);
+
+  const renderPurchaseCard = (purchase) => {
+    // Add null check for purchase and its properties
+    if (!purchase || !purchase.materialId) {
+      return null;
+    }
+
+    return (
+      <div key={purchase._id} className={`purchase-card ${purchase.status}`}>
+        <div className="purchase-header">
+          <h3>{purchase.materialId.title}</h3>
+          <div className={`status-badge ${purchase.status}`}>
+            {purchase.status === 'pending' ? (
+              <><Clock size={16} /> Pending</>
+            ) : purchase.status === 'approved' ? (
+              <><FileText size={16} /> Available</>
+            ) : (
+              <><Clock size={16} /> Rejected</>
+            )}
+          </div>
+        </div>
+        
+        <div className="purchase-details">
+          <div className="detail-item">
+            <Calendar size={16} />
+            <span>{new Date(purchase.createdAt).toLocaleDateString('en-US', {
+              day: 'numeric',
+              month: 'short',
+              year: 'numeric'
+            })}</span>
+          </div>
+          <div className="detail-item">
+            <CreditCard size={16} />
+            <span>₹{purchase.amount}</span>
+          </div>
+          <div className="detail-item">
+            <FileText size={16} />
+            <span>{purchase.userUpi}</span>
+          </div>
+        </div>
+        
+        {purchase.status === 'approved' && purchase.materialId.fileUrl && (
+          <button 
+            className="access-btn"
+            onClick={() => window.open(purchase.materialId.fileUrl, '_blank')}
+          >
+            View Notes
+          </button>
+        )}
+      </div>
+    );
   };
 
   if (loading) {
@@ -53,50 +107,7 @@ const UserDashboard = () => {
         </div>
       ) : (
         <div className="purchases-grid">
-          {purchases.map(purchase => (
-            <div key={purchase._id} className={`purchase-card ${purchase.status}`}>
-              <div className="purchase-header">
-                <h3>{purchase.materialId.title}</h3>
-                <div className={`status-badge ${purchase.status}`}>
-                  {purchase.status === 'pending' ? (
-                    <><Clock size={16} /> Pending</>
-                  ) : purchase.status === 'approved' ? (
-                    <><FileText size={16} /> Available</>
-                  ) : (
-                    <><Clock size={16} /> Rejected</>
-                  )}
-                </div>
-              </div>
-              
-              <div className="purchase-details">
-                <div className="detail-item">
-                  <Calendar size={16} />
-                  <span>{new Date(purchase.createdAt).toLocaleDateString('en-US', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric'
-                  })}</span>
-                </div>
-                <div className="detail-item">
-                  <CreditCard size={16} />
-                  <span>₹{purchase.amount}</span>
-                </div>
-                <div className="detail-item">
-                  <FileText size={16} />
-                  <span>{purchase.userUpi}</span>
-                </div>
-              </div>
-              
-              {purchase.status === 'approved' && (
-                <button 
-                  className="access-btn"
-                  onClick={() => window.open(purchase.materialId.fileUrl, '_blank')}
-                >
-                  View Notes
-                </button>
-              )}
-            </div>
-          ))}
+          {purchases.map(purchase => renderPurchaseCard(purchase))}
         </div>
       )}
     </div>

@@ -384,7 +384,19 @@ const StudyMaterials = () => {
   };
 
   const getAccessButton = (material) => {
-    const purchase = userPurchases.find(p => p.materialId._id === material._id);
+    // Check if userPurchases exists and is an array
+    if (!Array.isArray(userPurchases)) {
+      return (
+        <button className="sm-get-access" onClick={() => handlePurchase(material)}>
+          Get Access
+        </button>
+      );
+    }
+
+    // Find purchase with null check
+    const purchase = userPurchases.find(p => 
+      p && p.materialId && p.materialId._id === material._id
+    );
     
     if (!purchase) {
       return (
@@ -396,7 +408,11 @@ const StudyMaterials = () => {
 
     switch (purchase.status) {
       case 'pending':
-        return <button className="sm-pending" disabled>Pending Approval</button>;
+        return (
+          <button className="sm-pending" disabled>
+            Pending Approval
+          </button>
+        );
       case 'approved':
         return (
           <button 
@@ -416,7 +432,11 @@ const StudyMaterials = () => {
           </button>
         );
       default:
-        return null;
+        return (
+          <button className="sm-get-access" onClick={() => handlePurchase(material)}>
+            Get Access
+          </button>
+        );
     }
   };
 
