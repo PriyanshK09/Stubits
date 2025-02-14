@@ -7,9 +7,6 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
-  },
-  tls: {
-    ciphers: 'SSLv3'
   }
 });
 
@@ -126,43 +123,45 @@ const sendPaymentStatusEmail = async (userEmail, userName, materialTitle, status
 
   const template = status === 'approved' 
     ? `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+    <div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #110C22; border-radius: 20px; border: 1px solid rgba(147, 51, 234, 0.2);">
       <div style="text-align: center; margin-bottom: 30px;">
-        <img src="https://stubits.com/logo.png" alt="Stubits Logo" style="width: 150px;">
+        <img src="data:image/png;base64,${Buffer.from(require('fs').readFileSync('public/images/logo.png')).toString('base64')}" alt="Stubits Logo" style="width: 150px;">
       </div>
-      <h2 style="color: #2d3748; margin-bottom: 20px;">Payment Approved! 🎉</h2>
-      <p style="color: #4a5568; line-height: 1.6;">Dear ${userName},</p>
-      <p style="color: #4a5568; line-height: 1.6;">Great news! Your payment of ₹${amount} for "${materialTitle}" has been approved.</p>
-      <p style="color: #4a5568; line-height: 1.6;">You can now access your study material from your dashboard.</p>
+      <h2 style="color: #FFFFFF; margin-bottom: 20px; font-size: 24px; background: linear-gradient(135deg, #9333ea 0%, #7928ca 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Payment Approved! 🎉</h2>
+      <div style="background: rgba(147, 51, 234, 0.1); border-radius: 16px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(147, 51, 234, 0.2);">
+        <p style="color: #E2E8F0; line-height: 1.6;">Dear ${userName},</p>
+        <p style="color: #E2E8F0; line-height: 1.6;">Your payment of ₹${amount} for "${materialTitle}" has been approved!</p>
+        <p style="color: #E2E8F0; line-height: 1.6;">You can now access your study material from your dashboard.</p>
+      </div>
       <div style="text-align: center; margin: 30px 0;">
-        <a href="https://stubits.com/dashboard" style="background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Access Your Material</a>
+        <a href="https://stubits.com/auth/signin?redirect=/dashboard" style="background: linear-gradient(135deg, #9333ea 0%, #7928ca 100%); color: white; padding: 12px 24px; text-decoration: none; border-radius: 12px; font-weight: 600; display: inline-block;">Access Your Material</a>
       </div>
-      <p style="color: #718096; font-size: 0.9em;">If you have any questions, feel free to reply to this email.</p>
-      <hr style="border: 1px solid #edf2f7; margin: 20px 0;">
-      <p style="color: #718096; font-size: 0.8em; text-align: center;">© 2025 Stubits. All rights reserved.</p>
+      <p style="color: #94A3B8; font-size: 0.9em; text-align: center;">If you have any questions, feel free to reply to this email.</p>
+      <hr style="border: 1px solid rgba(147, 51, 234, 0.1); margin: 20px 0;">
+      <p style="color: #94A3B8; font-size: 0.8em; text-align: center;">© ${new Date().getFullYear()} Stubits. Made with 💜 for students</p>
     </div>
     `
     : `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+    <div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #110C22; border-radius: 20px; border: 1px solid rgba(239, 68, 68, 0.2);">
       <div style="text-align: center; margin-bottom: 30px;">
-        <img src="https://stubits.com/logo.png" alt="Stubits Logo" style="width: 150px;">
+        <img src="data:image/png;base64,${Buffer.from(require('fs').readFileSync('public/images/logo.png')).toString('base64')}" alt="Stubits Logo" style="width: 150px;">
       </div>
-      <h2 style="color: #2d3748; margin-bottom: 20px;">Payment Rejected ❌</h2>
-      <p style="color: #4a5568; line-height: 1.6;">Dear ${userName},</p>
-      <p style="color: #4a5568; line-height: 1.6;">We regret to inform you that your payment of ₹${amount} for "${materialTitle}" has been rejected.</p>
-      <p style="color: #4a5568; line-height: 1.6;">This might be due to:</p>
-      <ul style="color: #4a5568; line-height: 1.6;">
-        <li>Incorrect UPI transaction details</li>
-        <li>Payment amount mismatch</li>
-        <li>Transaction verification failed</li>
-      </ul>
-      <p style="color: #4a5568; line-height: 1.6;">Please try making the payment again or contact our support team for assistance.</p>
+      <h2 style="color: #FFFFFF; margin-bottom: 20px; font-size: 24px;">Payment Rejected ❌</h2>
+      <div style="background: rgba(239, 68, 68, 0.1); border-radius: 16px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(239, 68, 68, 0.2);">
+        <p style="color: #E2E8F0; line-height: 1.6;">Dear ${userName},</p>
+        <p style="color: #E2E8F0; line-height: 1.6;">Your payment of ₹${amount} for "${materialTitle}" was rejected.</p>
+        <ul style="color: #E2E8F0; line-height: 1.6;">
+          <li>Incorrect UPI transaction details</li>
+          <li>Payment amount mismatch</li>
+          <li>Transaction verification failed</li>
+        </ul>
+      </div>
       <div style="text-align: center; margin: 30px 0;">
-        <a href="https://stubits.com/support" style="background-color: #DC3545; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Contact Support</a>
+        <a href="https://stubits.com/auth/signin?redirect=/support" style="background: rgba(239, 68, 68, 0.2); color: #F87171; padding: 12px 24px; text-decoration: none; border-radius: 12px; font-weight: 600; border: 1px solid rgba(239, 68, 68, 0.3); display: inline-block;">Contact Support</a>
       </div>
-      <p style="color: #718096; font-size: 0.9em;">If you believe this is an error, please reply to this email.</p>
-      <hr style="border: 1px solid #edf2f7; margin: 20px 0;">
-      <p style="color: #718096; font-size: 0.8em; text-align: center;">© 2025 Stubits. All rights reserved.</p>
+      <p style="color: #94A3B8; font-size: 0.9em; text-align: center;">If you believe this is an error, please reply to this email.</p>
+      <hr style="border: 1px solid rgba(239, 68, 68, 0.1); margin: 20px 0;">
+      <p style="color: #94A3B8; font-size: 0.8em; text-align: center;">© ${new Date().getFullYear()} Stubits. Made with 💜 for students</p>
     </div>
     `;
 
