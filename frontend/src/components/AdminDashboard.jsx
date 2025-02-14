@@ -110,6 +110,13 @@ const AdminDashboard = ({ setIsAdmin }) => {
             <span>Payments</span>
           </button>
           <button
+            className={`nav-item ${activeTab === "donations" ? "active" : ""}`}
+            onClick={() => setActiveTab("donations")}
+          >
+            <Heart />
+            <span>Donations</span>
+          </button>
+          <button
             className={`nav-item ${
               activeTab === "performance" ? "active" : ""
             }`}
@@ -121,13 +128,6 @@ const AdminDashboard = ({ setIsAdmin }) => {
           <button className="nav-item logout" onClick={handleLogout}>
             <LogOut />
             <span>Logout</span>
-          </button>
-          <button
-            className={`nav-item ${activeTab === "donations" ? "active" : ""}`}
-            onClick={() => setActiveTab("donations")}
-          >
-            <Heart />
-            <span>Donations</span>
           </button>
         </nav>
       </aside>
