@@ -357,34 +357,12 @@ const Performance = ({ adminPassword }) => {
                 </div>
               </div>
             </div>
-
-            {donationStats.recentDonations && donationStats.recentDonations.length > 0 && (
-              <div className="recent-donations">
-                <h4>Recent Donations</h4>
-                <div className="donations-list">
-                  {donationStats.recentDonations.map((donation, index) => (
-                    <div key={index} className="donation-item">
-                      <div className="donation-amount">
-                        <IndianRupee size={16} />
-                        <span>{donation.amount}</span>
-                      </div>
-                      <span className="donation-date">
-                        {new Date(donation.createdAt).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric'
-                        })}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
         {/* Donation Insights */}
-        <div className="donation-insights">
-          <div className="top-donations">
+        <div className="insights-grid">
+          <div className="chart-card top-donations">
             <h3>Top Donations</h3>
             <div className="donations-list">
               {donationStats.topDonations?.map((donation, index) => (
@@ -400,8 +378,7 @@ const Performance = ({ adminPassword }) => {
                     <span className="date">
                       {new Date(donation.createdAt).toLocaleDateString('en-US', {
                         month: 'short',
-                        day: 'numeric',
-                        year: 'numeric'
+                        day: 'numeric'
                       })}
                     </span>
                   </div>
@@ -420,7 +397,7 @@ const Performance = ({ adminPassword }) => {
             </div>
           </div>
 
-          <div className="recent-donations">
+          <div className="chart-card recent-donations">
             <h3>Recent Donations</h3>
             <div className="donations-table-wrapper">
               <table className="donations-table">

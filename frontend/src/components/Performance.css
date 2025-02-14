@@ -414,12 +414,13 @@
   
   .donation-analytics {
     grid-column: span 2;
+    margin-bottom: 1.5rem;
   }
   
   .donation-stats-grid {
     display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
   }
   
   .donation-overview {
@@ -518,6 +519,9 @@
     .revenue-trend, .top-notes {
       grid-column: span 1;
     }
+    .insights-grid {
+      grid-template-columns: 1fr;
+    }
   }
   
   @media (max-width: 1024px) {
@@ -591,6 +595,19 @@
 
     .donation-overview {
       flex-direction: column;
+    }
+    
+    .donation-insights {
+      grid-template-columns: 1fr;
+    }
+    
+    .donations-table {
+      font-size: 0.875rem;
+    }
+    
+    .donations-table th,
+    .donations-table td {
+      padding: 0.75rem;
     }
   }
 
@@ -710,12 +727,6 @@
   background: rgba(147, 51, 234, 0.05);
 }
 
-@media (max-width: 1024px) {
-  .donation-insights {
-    grid-template-columns: 1fr;
-  }
-}
-
 /* Update and add these styles */
 .donation-card {
   background: rgba(17, 12, 34, 0.6);
@@ -820,17 +831,12 @@
   background: rgba(147, 51, 234, 0.05);
 }
 
-@media (max-width: 768px) {
+.donations-table-wrapper {
+  margin-top: 1rem;
+}
+
+@media (max-width: 1024px) {
   .donation-insights {
     grid-template-columns: 1fr;
-  }
-  
-  .donations-table {
-    font-size: 0.875rem;
-  }
-  
-  .donations-table th,
-  .donations-table td {
-    padding: 0.75rem;
   }
 }
