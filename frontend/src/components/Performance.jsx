@@ -5,7 +5,7 @@ import {
 } from 'recharts';
 import { 
   TrendingUp, Users, FileText, IndianRupee,
-  ChevronDown
+  ChevronDown, Heart
 } from 'lucide-react';
 import './Performance.css';
 
@@ -337,6 +337,55 @@ const Performance = ({ adminPassword }) => {
             </div>
           </div>
         )}
+
+        {/* Donation Analytics */}
+        <div className="chart-card donation-analytics">
+          <h3>Donation Analytics</h3>
+          <div className="donation-stats-grid">
+            <div className="donation-overview">
+              <div className="stat-item total-donations">
+                <div className="stat-icon">
+                  <Heart size={24} />
+                </div>
+                <div className="stat-info">
+                  <h4>Total Donations</h4>
+                  <p className="stat-value">{donationStats.totalDonations}</p>
+                </div>
+              </div>
+              <div className="stat-item total-amount">
+                <div className="stat-icon">
+                  <IndianRupee size={24} />
+                </div>
+                <div className="stat-info">
+                  <h4>Total Amount</h4>
+                  <p className="stat-value">₹{donationStats.totalAmount}</p>
+                </div>
+              </div>
+            </div>
+
+            {donationStats.recentDonations && donationStats.recentDonations.length > 0 && (
+              <div className="recent-donations">
+                <h4>Recent Donations</h4>
+                <div className="donations-list">
+                  {donationStats.recentDonations.map((donation, index) => (
+                    <div key={index} className="donation-item">
+                      <div className="donation-amount">
+                        <IndianRupee size={16} />
+                        <span>{donation.amount}</span>
+                      </div>
+                      <span className="donation-date">
+                        {new Date(donation.createdAt).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric'
+                        })}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

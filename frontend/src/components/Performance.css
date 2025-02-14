@@ -477,3 +477,132 @@
       justify-content: space-between;
     }
   }
+
+  /* Add these new styles */
+.donation-analytics {
+  grid-column: span 2;
+}
+
+.donation-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+}
+
+.donation-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.donation-overview .stat-item {
+  background: rgba(147, 51, 234, 0.05);
+  border: 1px solid rgba(147, 51, 234, 0.1);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+}
+
+.donation-overview .stat-item:hover {
+  transform: translateY(-2px);
+  border-color: rgba(147, 51, 234, 0.3);
+  background: rgba(147, 51, 234, 0.1);
+}
+
+.donation-overview .stat-icon {
+  padding: 12px;
+  background: rgba(147, 51, 234, 0.1);
+  border-radius: 12px;
+  color: #9333ea;
+}
+
+.donation-overview .stat-info h4 {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.donation-overview .stat-value {
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.recent-donations {
+  background: rgba(147, 51, 234, 0.05);
+  border: 1px solid rgba(147, 51, 234, 0.1);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.recent-donations h4 {
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.donations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.donation-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: rgba(17, 12, 34, 0.6);
+  border: 1px solid rgba(147, 51, 234, 0.1);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.donation-item:hover {
+  transform: translateY(-1px);
+  border-color: rgba(147, 51, 234, 0.3);
+}
+
+.donation-amount {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #9333ea;
+  font-weight: 600;
+}
+
+.donation-date {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+/* Add responsive styles */
+@media (max-width: 1024px) {
+  .donation-analytics {
+    grid-column: span 1;
+  }
+
+  .donation-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .donation-overview {
+    flex-direction: row;
+  }
+
+  .donation-overview .stat-item {
+    flex: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .donation-overview {
+    flex-direction: column;
+  }
+}
