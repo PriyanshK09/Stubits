@@ -135,4 +135,49 @@ router.patch('/payments/:id', checkAdmin, async (req, res) => {
   }
 });
 
+router.get('/stats', checkAdmin, async (req, res) => {
+  try {
+    const totalRevenue = await Payment.aggregate([
+      { $match: { status: 'approved' } },
+      { $group: { _id: null, total: { $sum: '$amount' } } }
+    ]);
+
+    const totalSales = await Payment.countDocuments({ status: 'approved' });
+    const activeCustomers = await User.countDocuments({ 'purchases.0': { $exists: true } });
+    
+    const topNotes = await Payment.aggregate([
+      { $match: { status: 'approved' } },
+      { $group: { 
+        _id: '$materialId',
+        sales: { $sum: 1 }
+      }},
+      { $lookup: {
+        from: 'studymaterials',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'material'
+      }},
+      { $unwind: '$material' },
+      { $project: {
+        title: '$material.title',
+        sales: 1
+      }},
+      { $sort: { sales: -1 } },
+      { $limit: 5 }
+    ]);
+
+    // Send the compiled stats
+    res.json({
+      totalRevenue: totalRevenue[0]?.total || 0,
+      totalSales,
+      activeCustomers,
+      avgOrderValue: totalRevenue[0] ? Math.round(totalRevenue[0].total / totalSales) : 0,
+      // Add other stats...
+    });
+  } catch (error) {
+    console.error('Error fetching stats:', error);
+    res.status(500).json({ message: 'Error fetching statistics' });
+  }
+});
+
 module.exports = router;

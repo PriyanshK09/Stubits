@@ -1,12 +1,13 @@
 // frontend/src/components/AdminDashboard.jsx
 import React, { useState } from 'react';
-import { Book, Upload, Settings as SettingsIcon, Users, LogOut, CreditCard } from 'lucide-react';
+import { Book, Upload, Settings as SettingsIcon, Users, LogOut, CreditCard, LineChart } from 'lucide-react';
 import './AdminDashboard.css';
 import ManageNotes from './ManageNotes';
 import Subscribers from './Subscribers';
 import UploadMaterial from './UploadMaterial';
 import PaymentManagement from './PaymentManagement';
 import SettingsComponent from './Settings';
+import Performance from './Performance';
 
 const AdminDashboard = ({ setIsAdmin }) => {
   const [activeTab, setActiveTab] = useState('notes');
@@ -106,6 +107,13 @@ const AdminDashboard = ({ setIsAdmin }) => {
             <span>Payments</span>
           </button>
           <button
+            className={`nav-item ${activeTab === 'performance' ? 'active' : ''}`}
+            onClick={() => setActiveTab('performance')}
+          >
+            <LineChart />
+            <span>Performance</span>
+          </button>
+          <button
             className="nav-item logout"
             onClick={handleLogout}
           >
@@ -146,6 +154,9 @@ const AdminDashboard = ({ setIsAdmin }) => {
         )}
         {activeTab === 'payments' && (
           <PaymentManagement adminPassword={password} />
+        )}
+        {activeTab === 'performance' && (
+          <Performance adminPassword={password} />
         )}
       </main>
     </div>
