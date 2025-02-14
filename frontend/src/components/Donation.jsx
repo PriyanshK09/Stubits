@@ -44,11 +44,55 @@ const Donation = () => {
     e.preventDefault();
     setShowErrors(true);
     const finalAmount = selectedAmount || Number(customAmount);
-    if (!finalAmount || !upiId) {
-      alert("Please select an amount and enter UPI ID");
+
+    if (!finalAmount || !upiId || !name || !email) {
+      alert("Please fill in all required fields");
       return;
     }
-    // Add your UPI payment logic here
+
+    try {
+      const response = await fetch('https://stubits.onrender.com/api/donations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          amount: finalAmount,
+          upiId,
+          message: message || undefined
+        })
+      });
+
+      if (response.ok) {
+        // Remove data variable since it's not being used
+        await response.json(); // Keep the await to ensure request completes
+        
+        // Clear form after successful submission
+        setName("");
+        setEmail("");
+        setUpiId("");
+        setMessage("");
+        setSelectedAmount(null);
+        setCustomAmount("");
+        setTouched({
+          name: false,
+          email: false,
+          upi: false
+        });
+        setShowErrors(false);
+
+        // Show success message
+        alert("Thank you for your donation! Our team will process it shortly.");
+      } else {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to process donation');
+      }
+    } catch (error) {
+      console.error('Error submitting donation:', error);
+      alert("Failed to process donation. Please try again later.");
+    }
   };
 
   return (
