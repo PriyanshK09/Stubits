@@ -138,16 +138,29 @@ router.patch('/payments/:id', checkAdmin, async (req, res) => {
 
 router.get('/stats', checkAdmin, async (req, res) => {
   try {
-    const { timeRange } = req.query;
+    const { timeRange, month } = req.query;
     let dateFilter = {};
     
     // Calculate date range based on filter
     switch(timeRange) {
       case 'week':
-        dateFilter = { createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } };
+        dateFilter = { 
+          createdAt: { 
+            $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) 
+          } 
+        };
         break;
       case 'month':
-        dateFilter = { createdAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } };
+        const year = new Date().getFullYear();
+        const monthNum = parseInt(month) || new Date().getMonth() + 1;
+        const startDate = new Date(year, monthNum - 1, 1);
+        const endDate = new Date(year, monthNum, 0);
+        dateFilter = {
+          createdAt: {
+            $gte: startDate,
+            $lte: endDate
+          }
+        };
         break;
       default:
         dateFilter = {}; // all time

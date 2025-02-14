@@ -4,7 +4,8 @@ import {
   PieChart, Pie, Cell, ResponsiveContainer, AreaChart, Area, Label 
 } from 'recharts';
 import { 
-  TrendingUp, Users, FileText, IndianRupee
+  TrendingUp, Users, FileText, IndianRupee,
+  ChevronDown
 } from 'lucide-react';
 import './Performance.css';
 
@@ -13,14 +14,21 @@ const Performance = ({ adminPassword }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [timeRange, setTimeRange] = useState('all');
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+  const [showMonthDropdown, setShowMonthDropdown] = useState(false);
 
   const fetchStats = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       
+      const queryParams = new URLSearchParams({
+        timeRange,
+        ...(timeRange === 'month' && { month: selectedMonth + 1 })
+      });
+      
       const response = await fetch(
-        `https://stubits.onrender.com/api/admin/stats?timeRange=${timeRange}`,
+        `https://stubits.onrender.com/api/admin/stats?${queryParams}`,
         {
           headers: {
             'adminKey': adminPassword
@@ -29,12 +37,10 @@ const Performance = ({ adminPassword }) => {
       );
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to fetch statistics');
+        throw new Error('Failed to fetch statistics');
       }
 
       const data = await response.json();
-      console.log('Fetched stats:', data); // Debug log
       setStats(data);
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -42,11 +48,19 @@ const Performance = ({ adminPassword }) => {
     } finally {
       setLoading(false);
     }
-  }, [adminPassword, timeRange]);
+  }, [adminPassword, timeRange, selectedMonth]);
 
+  // First useEffect to fetch data when component mounts
   useEffect(() => {
     fetchStats();
   }, [fetchStats]);
+
+  // Second useEffect to handle month selection changes
+  useEffect(() => {
+    if (timeRange === 'month') {
+      fetchStats();
+    }
+  }, [timeRange, selectedMonth, fetchStats]); // Added timeRange as dependency
 
   if (loading) {
     return (
@@ -85,34 +99,65 @@ const Performance = ({ adminPassword }) => {
   // Define colors array
   const COLORS = ['#9333ea', '#7928ca', '#4c1d95', '#2e1065'];
 
+  const months = [
+    'January', 'February', 'March', 'April',
+    'May', 'June', 'July', 'August',
+    'September', 'October', 'November', 'December'
+  ];
+
+  const renderTimeRangeSelector = () => (
+    <div className="time-range-selector">
+      <div className="time-range-filter">
+        <button 
+          className={timeRange === 'week' ? 'active' : ''} 
+          onClick={() => setTimeRange('week')}
+        >
+          Week
+        </button>
+        <button 
+          className={timeRange === 'month' ? 'active' : ''} 
+          onClick={() => {
+            setTimeRange('month');
+            setShowMonthDropdown(true);
+          }}
+        >
+          Month <ChevronDown size={16} />
+        </button>
+        <button 
+          className={timeRange === 'all' ? 'active' : ''} 
+          onClick={() => setTimeRange('all')}
+        >
+          All Time
+        </button>
+      </div>
+      
+      {timeRange === 'month' && showMonthDropdown && (
+        <div className="month-dropdown">
+          {months.map((month, index) => (
+            <button
+              key={month}
+              className={selectedMonth === index ? 'active' : ''}
+              onClick={() => {
+                setSelectedMonth(index);
+                setShowMonthDropdown(false);
+              }}
+            >
+              {month}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="admin-component-content">
-      {/* Time Range Filter */}
-      <div className="admin-component-header">
-        <div className="header-text">
+      <div className="performance-header">
+        <div className="header-content">
           <h2>Performance Analytics</h2>
           <p>Track your platform's performance and sales metrics</p>
         </div>
-        <div className="time-range-filter">
-          <button 
-            className={timeRange === 'week' ? 'active' : ''} 
-            onClick={() => setTimeRange('week')}
-          >
-            Week
-          </button>
-          <button 
-            className={timeRange === 'month' ? 'active' : ''} 
-            onClick={() => setTimeRange('month')}
-          >
-            Month
-          </button>
-          <button 
-            className={timeRange === 'all' ? 'active' : ''} 
-            onClick={() => setTimeRange('all')}
-          >
-            All Time
-          </button>
-        </div>
+        {renderTimeRangeSelector()}
       </div>
 
       <div className="stats-grid">
