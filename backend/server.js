@@ -58,12 +58,14 @@ const adminRoutes = require('./routes/admin');
 const subscribeRoutes = require('./routes/subscribe');
 const materialsRoutes = require('./routes/materials');
 const paymentRoutes = require('./routes/payments');
+const donationRoutes = require('./routes/donation');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api', subscribeRoutes);
 app.use('/api', materialsRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/donations', donationRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
