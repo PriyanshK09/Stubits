@@ -11,7 +11,7 @@ const crypto = require('crypto');
 const PROD_FRONTEND_URL = 'https://stubits.com';
 const PROD_BACKEND_URL = 'https://stubits.onrender.com';
 const DEV_FRONTEND_URL = 'http://localhost:3000';
-const DEV_BACKEND_URL = 'http://localhost:5000';
+const DEV_BACKEND_URL = 'https://stubits.onrender.com';
 
 // Add generateToken function
 const generateToken = (user) => {

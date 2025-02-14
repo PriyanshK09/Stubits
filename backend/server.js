@@ -63,7 +63,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api', subscribeRoutes);
 app.use('/api', materialsRoutes);
-app.use('/api/payments', paymentRoutes);
+app.use('/api', paymentRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

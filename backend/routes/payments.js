@@ -1,6 +1,8 @@
-const router = require('express').Router();
+const express = require('express');
+const router = express.Router();
 const Payment = require('../models/Payment');
 const auth = require('../middleware/auth');
+const { sendPaymentConfirmationEmail } = require('../services/emailService');
 
 // Create new payment
 router.post('/', auth, async (req, res) => {
@@ -35,6 +37,35 @@ router.get('/my', auth, async (req, res) => {
     res.json(payments);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching payments' });
+  }
+});
+
+router.post('/payment/confirm', async (req, res) => {
+  try {
+    const { email, paymentDetails } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+
+    // Send confirmation email
+    try {
+      await sendPaymentConfirmationEmail(email, paymentDetails);
+      res.status(200).json({ 
+        message: 'Payment confirmation email sent successfully' 
+      });
+    } catch (emailError) {
+      console.error('Failed to send payment confirmation email:', emailError);
+      res.status(500).json({ 
+        message: 'Failed to send payment confirmation email' 
+      });
+    }
+
+  } catch (error) {
+    console.error('Payment confirmation error:', error);
+    res.status(500).json({ 
+      message: 'Internal server error' 
+    });
   }
 });
 
