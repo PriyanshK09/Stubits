@@ -222,20 +222,14 @@ const Performance = ({ adminPassword }) => {
             </div>
           </div>
 
-          <div className="stat-card donation-stats">
-            <div className="stat-header">
-              <h3>Donation Statistics</h3>
-              <IndianRupee className="stat-icon" />
+          <div className="stat-card total-donations">
+            <div className="stat-icon">
+              <Heart size={24} />
             </div>
-            <div className="stat-content">
-              <div className="stat-item">
-                <span className="stat-label">Total Donations</span>
-                <span className="stat-value">{donationStats.totalDonations}</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-label">Total Amount</span>
-                <span className="stat-value">₹{donationStats.totalAmount}</span>
-              </div>
+            <div className="stat-info">
+              <h3>Total Donations</h3>
+              <p className="stat-value">₹{donationStats.totalAmount}</p>
+              <span className="stat-label">{donationStats.totalDonations} donations received</span>
             </div>
           </div>
         </div>
