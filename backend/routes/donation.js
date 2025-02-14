@@ -1,7 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const Donation = require('../models/Donation');
-const { checkAdmin } = require('../middleware/auth');
+
+// Import checkAdmin middleware directly
+const checkAdmin = (req, res, next) => {
+  const { adminKey } = req.headers;
+  if (adminKey !== process.env.ADMIN_KEY) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+  next();
+};
 
 // Create donation
 router.post('/', async (req, res) => {
