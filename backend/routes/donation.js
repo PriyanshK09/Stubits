@@ -52,14 +52,23 @@ router.get('/stats', async (req, res) => {
     const totalDonations = await Donation.countDocuments({ status: 'approved' });
     const donations = await Donation.find({ status: 'approved' });
     const totalAmount = donations.reduce((sum, donation) => sum + donation.amount, 0);
+    
+    // Get top 5 donations by amount
+    const topDonations = await Donation.find({ status: 'approved' })
+      .sort({ amount: -1 })
+      .limit(5)
+      .select('name amount upiId createdAt');
+
+    // Get recent 5 donations with full details
     const recentDonations = await Donation.find({ status: 'approved' })
       .sort({ createdAt: -1 })
       .limit(5)
-      .select('amount createdAt');
+      .select('name amount upiId createdAt');
 
     res.json({
       totalDonations,
       totalAmount,
+      topDonations,
       recentDonations
     });
   } catch (error) {

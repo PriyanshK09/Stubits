@@ -593,3 +593,125 @@
       flex-direction: column;
     }
   }
+
+  /* Add these new styles */
+.donation-insights {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.top-donations,
+.recent-donations {
+  background: rgba(17, 12, 34, 0.6);
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.top-donations h3,
+.recent-donations h3 {
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  font-size: 1.25rem;
+}
+
+.donations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.donation-card {
+  background: rgba(147, 51, 234, 0.05);
+  border: 1px solid rgba(147, 51, 234, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+.donation-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(147, 51, 234, 0.3);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.rank {
+  color: #9333ea;
+  font-weight: 600;
+}
+
+.date {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.amount {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #9333ea;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.donor-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.donor-info .name {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.donor-info .upi {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.donations-table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.donations-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.donations-table th,
+.donations-table td {
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.donations-table th {
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.875rem;
+  border-bottom: 1px solid rgba(147, 51, 234, 0.2);
+}
+
+.donations-table td {
+  color: var(--text-primary);
+}
+
+.donations-table tr:hover {
+  background: rgba(147, 51, 234, 0.05);
+}
+
+@media (max-width: 1024px) {
+  .donation-insights {
+    grid-template-columns: 1fr;
+  }
+}

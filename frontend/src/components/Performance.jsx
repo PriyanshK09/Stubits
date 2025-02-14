@@ -19,7 +19,8 @@ const Performance = ({ adminPassword }) => {
   const [donationStats, setDonationStats] = useState({
     totalDonations: 0,
     totalAmount: 0,
-    recentDonations: []
+    recentDonations: [],
+    topDonations: []
   });
 
   const fetchStats = useCallback(async () => {
@@ -378,6 +379,73 @@ const Performance = ({ adminPassword }) => {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+
+        {/* Donation Insights */}
+        <div className="donation-insights">
+          <div className="top-donations">
+            <h3>Top Donations</h3>
+            <div className="donations-list">
+              {donationStats.topDonations?.map((donation, index) => (
+                <div key={donation._id} className="donation-card">
+                  <div className="card-header">
+                    <span className="rank">#{index + 1}</span>
+                    <span className="date">
+                      {new Date(donation.createdAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric'
+                      })}
+                    </span>
+                  </div>
+                  <div className="amount">
+                    <IndianRupee size={16} />
+                    <span>{donation.amount}</span>
+                  </div>
+                  <div className="donor-info">
+                    <p className="name">{donation.name}</p>
+                    <p className="upi">{donation.upiId}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="recent-donations">
+            <h3>Recent Donations</h3>
+            <div className="donations-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>Amount</th>
+                    <th>UPI ID</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {donationStats.recentDonations?.map((donation) => (
+                    <tr key={donation._id}>
+                      <td>
+                        {new Date(donation.createdAt).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}
+                      </td>
+                      <td>{donation.name}</td>
+                      <td>
+                        <div className="amount">
+                          <IndianRupee size={14} />
+                          {donation.amount}
+                        </div>
+                      </td>
+                      <td>{donation.upiId}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
