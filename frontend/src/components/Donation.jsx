@@ -204,7 +204,7 @@ const Donation = () => {
               onBlur={() => setTouched(prev => ({ ...prev, upi: true }))}
               className={`${touched.upi || showErrors ? 'show-error' : ''}`}
               required
-              pattern="[a-zA-Z0-9\.\-\_]+@[a-zA-Z][a-zA-Z]+"
+              pattern="[a-zA-Z0-9._-]+@[a-zA-Z]+"
               title="Please enter a valid UPI ID (e.g., name@upi)"
             />
             <span className="error-message">Please enter a valid UPI ID</span>

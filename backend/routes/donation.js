@@ -46,4 +46,25 @@ router.patch('/:id', checkAdmin, async (req, res) => {
   }
 });
 
+// Add this new route
+router.get('/stats', async (req, res) => {
+  try {
+    const totalDonations = await Donation.countDocuments({ status: 'approved' });
+    const donations = await Donation.find({ status: 'approved' });
+    const totalAmount = donations.reduce((sum, donation) => sum + donation.amount, 0);
+    const recentDonations = await Donation.find({ status: 'approved' })
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .select('amount createdAt');
+
+    res.json({
+      totalDonations,
+      totalAmount,
+      recentDonations
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching donation statistics' });
+  }
+});
+
 module.exports = router;

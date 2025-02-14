@@ -387,6 +387,38 @@
     color: white;
   }
   
+  .donation-stats {
+    background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(79, 70, 229, 0.1));
+    border: 1px solid rgba(147, 51, 234, 0.2);
+  }
+  
+  .donation-stats .stat-icon {
+    color: #9333ea;
+  }
+  
+  .stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(147, 51, 234, 0.1);
+  }
+  
+  .stat-item:last-child {
+    border-bottom: none;
+  }
+  
+  .stat-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+  
+  .stat-value {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+  
   @media (max-width: 1200px) {
     .revenue-trend, .top-notes {
       grid-column: span 1;

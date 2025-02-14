@@ -16,6 +16,11 @@ const Performance = ({ adminPassword }) => {
   const [timeRange, setTimeRange] = useState('all');
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [showMonthDropdown, setShowMonthDropdown] = useState(false);
+  const [donationStats, setDonationStats] = useState({
+    totalDonations: 0,
+    totalAmount: 0,
+    recentDonations: []
+  });
 
   const fetchStats = useCallback(async () => {
     try {
@@ -61,6 +66,20 @@ const Performance = ({ adminPassword }) => {
       fetchStats();
     }
   }, [timeRange, selectedMonth, fetchStats]); // Added timeRange as dependency
+
+  useEffect(() => {
+    const fetchDonationStats = async () => {
+      try {
+        const response = await fetch('https://stubits.onrender.com/api/donations/stats');
+        const data = await response.json();
+        setDonationStats(data);
+      } catch (error) {
+        console.error('Error fetching donation stats:', error);
+      }
+    };
+
+    fetchDonationStats();
+  }, []);
 
   if (loading) {
     return (
@@ -200,6 +219,23 @@ const Performance = ({ adminPassword }) => {
             <div className="stat-info">
               <h3>Avg. Order Value</h3>
               <p className="stat-value">₹{stats.overview.averageOrderValue}</p>
+            </div>
+          </div>
+
+          <div className="stat-card donation-stats">
+            <div className="stat-header">
+              <h3>Donation Statistics</h3>
+              <IndianRupee className="stat-icon" />
+            </div>
+            <div className="stat-content">
+              <div className="stat-item">
+                <span className="stat-label">Total Donations</span>
+                <span className="stat-value">{donationStats.totalDonations}</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Total Amount</span>
+                <span className="stat-value">₹{donationStats.totalAmount}</span>
+              </div>
             </div>
           </div>
         </div>
