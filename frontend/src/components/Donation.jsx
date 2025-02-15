@@ -27,7 +27,25 @@ const donationOptions = [
   }
 ]
 
-const UPI_ID = "payment@stubits"; // Replace with your actual UPI ID
+const UPI_ID = "risabhpant77@axl"; // Replace with your actual UPI ID
+
+const generateQRUrl = (amount) => {
+  const baseUrl = "upi://pay";
+  const params = {
+    pa: UPI_ID,                     // Payee UPI ID
+    pn: "Stubits Education",        // Payee name
+    am: amount || "",               // Amount (empty for custom amount)
+    tn: "Donation to Stubits",      // Transaction note
+    cu: "INR"                       // Currency
+  };
+  
+  return `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
+    `${baseUrl}?${Object.entries(params)
+      .filter(([_, value]) => value !== "")
+      .map(([key, value]) => `${key}=${value}`)
+      .join("&")}`
+  )}&size=200x200&format=png&qzone=2`;
+};
 
 const Donation = () => {
   const [selectedAmount, setSelectedAmount] = useState(null);
@@ -172,12 +190,24 @@ const Donation = () => {
               <h3>Scan & Pay</h3>
             </div>
             <div className="qr-code">
-              <img 
-                src="/images/upiqr.jpg"
-                alt="UPI QR Code"
-                width="200"
-                height="200"
-              />
+              <div className="qr-wrapper">
+                <img 
+                  src={generateQRUrl(selectedAmount || customAmount)}
+                  alt="UPI QR Code"
+                  className="qr-image"
+                />
+                <img 
+                  src="/images/logo.png"
+                  alt="Stubits Logo"
+                  className="qr-logo"
+                />
+              </div>
+              {(selectedAmount || customAmount) && (
+                <div className="qr-amount">
+                  <IndianRupee size={14} />
+                  <span>{selectedAmount || customAmount}</span>
+                </div>
+              )}
             </div>
             <div className="upi-details">
               <div className="upi-id-display">
