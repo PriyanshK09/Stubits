@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Clock, Book, Calendar, CreditCard, Upload } from 'lucide-react';
+import { FileText, Clock, Book, Calendar, CreditCard, Upload, Check } from 'lucide-react';
 import './UserDashboard.css';
 
 const UserDashboard = () => {
@@ -115,18 +115,26 @@ const UserDashboard = () => {
         {purchase.status === 'pending' && (
           <div className="speed-up-process">
             <button 
-              type="button"
-              className="speed-up-btn"
+              className={`speed-up-btn ${purchase.screenshot ? 'uploaded' : ''}`}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 setSelectedPaymentId(purchase._id);
                 setShowUploadModal(true);
               }}
-              aria-label="Upload payment screenshot"
+              disabled={purchase.screenshot}
             >
-              <Upload size={14} />
-              Want to speed up the process? Click Here
+              {purchase.screenshot ? (
+                <>
+                  <Check size={14} />
+                  Screenshot Uploaded
+                </>
+              ) : (
+                <>
+                  <Upload size={14} />
+                  Want to speed up the process? Click Here
+                </>
+              )}
             </button>
           </div>
         )}

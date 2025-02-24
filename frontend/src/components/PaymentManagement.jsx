@@ -95,6 +95,19 @@ const PaymentManagement = ({ adminPassword }) => {
               <label>Date</label>
               <span>{new Date(payment.createdAt).toLocaleDateString()}</span>
             </div>
+            
+            {payment.screenshot && (
+              <div className="info-item screenshot-item">
+                <label>Payment Screenshot</label>
+                <div className="screenshot-preview">
+                  <img 
+                    src={payment.screenshot} 
+                    alt="Payment Screenshot"
+                    onClick={() => window.open(payment.screenshot, '_blank')}
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           {payment.status === 'pending' && (
