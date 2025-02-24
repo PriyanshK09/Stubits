@@ -115,6 +115,7 @@ const UserDashboard = () => {
         {purchase.status === 'pending' && (
           <div className="speed-up-process">
             <button 
+              type="button"
               className="speed-up-btn"
               onClick={(e) => {
                 e.preventDefault();
@@ -122,6 +123,7 @@ const UserDashboard = () => {
                 setSelectedPaymentId(purchase._id);
                 setShowUploadModal(true);
               }}
+              aria-label="Upload payment screenshot"
             >
               <Upload size={14} />
               Want to speed up the process? Click Here

@@ -42,6 +42,7 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  z-index: 1;
 }
 
 .purchase-card::before {
@@ -223,8 +224,12 @@
   margin-top: 1rem;
   padding-top: 1rem;
   border-top: 1px solid rgba(147, 51, 234, 0.1);
+  position: relative;
+  z-index: 2;
+  pointer-events: all;
 }
 
+/* Update the speed-up button styles */
 .speed-up-btn {
   width: 100%;
   padding: 0.75rem;
@@ -237,13 +242,16 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  cursor: pointer;
+  cursor: pointer !important; /* Force cursor pointer */
   transition: all 0.3s ease;
+  position: relative;
+  z-index: 2; /* Ensure button is above card overlay */
 }
 
 .speed-up-btn:hover {
   background: rgba(147, 51, 234, 0.15);
   transform: translateY(-1px);
+  border-color: rgba(147, 51, 234, 0.4);
 }
 
 /* Screenshot modal styles */
