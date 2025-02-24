@@ -24,7 +24,7 @@
   max-height: calc(100vh - 4rem); /* Account for padding */
   overflow-y: auto; /* Enable scrolling within modal */
   margin: auto; /* Center vertically when smaller than viewport */
-  margin-top: 7rem;
+  margin-top: 4rem;
   scrollbar-width: thin;
   scrollbar-color: rgba(147, 51, 234, 0.3) rgba(17, 12, 34, 0.6);
 }
