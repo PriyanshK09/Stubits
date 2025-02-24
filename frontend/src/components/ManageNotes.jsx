@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { 
-  Plus, Search, Edit, Trash2, FileText, ExternalLink 
+  Plus, Search, Edit, Trash2, FileText, ExternalLink, Eye, EyeOff, Loader 
 } from 'lucide-react';
 import './ManageNotes.css';
 
@@ -59,6 +59,24 @@ const ManageNotes = ({ adminPassword, setActiveTab, setEditData }) => {
     setActiveTab('upload');
   };
 
+  const handleToggleVisibility = async (id, isHidden) => {
+    try {
+      const response = await fetch(`https://stubits.onrender.com/api/admin/materials/${id}/visibility`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'adminKey': adminPassword
+        },
+        body: JSON.stringify({ isHidden: !isHidden })
+      });
+      if (response.ok) {
+        fetchMaterials();
+      }
+    } catch (error) {
+      console.error('Error toggling visibility:', error);
+    }
+  };
+
 return (
   <div className="admin-component-content">
     <div className="admin-component-header">
@@ -87,7 +105,12 @@ return (
 
       <div className="materials-grid">
         {loading ? (
-          <div className="loading">Loading...</div>
+          <div className="loader-container">
+            <div className="loader">
+              <Loader size={32} />
+            </div>
+            <p>Loading study materials...</p>
+          </div>
         ) : (
           materials
             .filter(
@@ -96,7 +119,16 @@ return (
                 m.description.toLowerCase().includes(searchTerm.toLowerCase())
             )
             .map((material) => (
-              <div key={material._id} className="material-card">
+              <div 
+                key={material._id} 
+                className={`material-card ${material.isHidden ? 'hidden' : ''}`}
+              >
+                {material.isHidden && (
+                  <div className="hidden-tag">
+                    <EyeOff size={12} />
+                    Hidden
+                  </div>
+                )}
                 <div
                   className="material-content"
                   onClick={() => handlePreview(material.fileUrl)}
@@ -168,6 +200,28 @@ return (
               >
                 <Trash2 size={16} />
                 Delete Material
+              </button>
+              <button
+                className={`mn-preview-visibility-btn ${
+                  materials.find((m) => m.fileUrl === previewUrl)?.isHidden ? 'hidden' : 'visible'
+                }`}
+                onClick={() => {
+                  const material = materials.find((m) => m.fileUrl === previewUrl);
+                  handleToggleVisibility(material._id, material.isHidden);
+                  setShowPreview(false);
+                }}
+              >
+                {materials.find((m) => m.fileUrl === previewUrl)?.isHidden ? (
+                  <>
+                    <EyeOff size={16} />
+                    Notes: Hidden
+                  </>
+                ) : (
+                  <>
+                    <Eye size={16} />
+                    Notes: Visible
+                  </>
+                )}
               </button>
               <button
                 className="cancel-btn"

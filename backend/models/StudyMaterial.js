@@ -40,6 +40,10 @@ const studyMaterialSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  isHidden: {
+    type: Boolean,
+    default: false
   }
 });
 

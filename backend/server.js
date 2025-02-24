@@ -13,8 +13,10 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: 'https://stubits.com',
-  credentials: true
+  origin: ['https://stubits.com', 'http://localhost:3000'], // Add localhost for development
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'adminKey', 'Authorization'],
 }));
 app.use(express.json());
 app.use(session({

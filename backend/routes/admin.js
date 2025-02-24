@@ -86,6 +86,28 @@ router.put('/materials/:id', checkAdmin, async (req, res) => {
   }
 });
 
+// Add new route for toggling visibility
+router.patch('/materials/:id/visibility', checkAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { isHidden } = req.body;
+
+    const material = await StudyMaterial.findByIdAndUpdate(
+      id,
+      { isHidden },
+      { new: true }
+    );
+
+    if (!material) {
+      return res.status(404).json({ message: 'Material not found' });
+    }
+
+    res.json(material);
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating material visibility' });
+  }
+});
+
 // Delete material
 router.delete('/materials/:id', checkAdmin, async (req, res) => {
   try {
