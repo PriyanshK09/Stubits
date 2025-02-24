@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Clock, Book, Calendar, CreditCard } from 'lucide-react';
+import { FileText, Clock, Book, Calendar, CreditCard, Upload } from 'lucide-react';
 import './UserDashboard.css';
 
 const UserDashboard = () => {
   const [purchases, setPurchases] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [selectedPaymentId, setSelectedPaymentId] = useState(null);
+  const [uploadedFile, setUploadedFile] = useState(null);
 
   const fetchPurchases = async () => {
     try {
@@ -21,6 +24,31 @@ const UserDashboard = () => {
       console.error('Failed to fetch purchases:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleScreenshotUpload = async (paymentId) => {
+    try {
+      const formData = new FormData();
+      formData.append('screenshot', uploadedFile);
+
+      const response = await fetch(`https://stubits.onrender.com/api/payments/${paymentId}/screenshot`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+        },
+        body: formData
+      });
+
+      if (response.ok) {
+        setShowUploadModal(false);
+        setUploadedFile(null);
+        fetchPurchases(); // Refresh purchases
+        alert('Screenshot uploaded successfully!');
+      }
+    } catch (error) {
+      console.error('Error uploading screenshot:', error);
+      alert('Failed to upload screenshot');
     }
   };
 
@@ -76,6 +104,21 @@ const UserDashboard = () => {
             View Notes
           </button>
         )}
+
+        {purchase.status === 'pending' && (
+          <div className="speed-up-process">
+            <button 
+              className="speed-up-btn"
+              onClick={() => {
+                setSelectedPaymentId(purchase._id);
+                setShowUploadModal(true);
+              }}
+            >
+              <Upload size={14} />
+              Want to speed up the process? Click Here
+            </button>
+          </div>
+        )}
       </div>
     );
   };
@@ -108,6 +151,42 @@ const UserDashboard = () => {
       ) : (
         <div className="purchases-grid">
           {purchases.map(purchase => renderPurchaseCard(purchase))}
+        </div>
+      )}
+
+      {showUploadModal && (
+        <div className="screenshot-modal">
+          <div className="modal-content">
+            <h3>Upload Payment Screenshot</h3>
+            <p>Please upload a clear screenshot of your payment</p>
+            
+            <div className="file-upload">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setUploadedFile(e.target.files[0])}
+              />
+            </div>
+
+            <div className="modal-actions">
+              <button 
+                className="upload-btn"
+                onClick={() => handleScreenshotUpload(selectedPaymentId)}
+                disabled={!uploadedFile}
+              >
+                Upload Screenshot
+              </button>
+              <button 
+                className="cancel-btn"
+                onClick={() => {
+                  setShowUploadModal(false);
+                  setUploadedFile(null);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

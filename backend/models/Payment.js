@@ -27,6 +27,10 @@ const paymentSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  screenshot: {
+    type: String,
+    default: null
   }
 });
 
