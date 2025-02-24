@@ -256,6 +256,9 @@ const StudyMaterials = () => {
   const getFilteredAndSortedMaterials = () => {
     let filtered = [...materials]
 
+    // First filter out hidden materials
+    filtered = filtered.filter(item => !item.isHidden);
+
     // Category filter
     if (selectedCategory !== "all") {
       filtered = filtered.filter(item => item.category === selectedCategory)
