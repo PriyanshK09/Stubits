@@ -1,5 +1,5 @@
 // frontend/src/components/PaymentGateway.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import './PaymentGateway.css';
 
@@ -8,6 +8,20 @@ const PaymentGateway = ({ material, onClose, onSuccess }) => {
   const [paymentStatus, setPaymentStatus] = useState(null);
   const [userUpi, setUserUpi] = useState('');
   const UPI_ID = "payment@stubits"; // Example UPI ID
+
+  useEffect(() => {
+    document.body.classList.add('payment-modal-open');
+    
+    return () => {
+      document.body.classList.remove('payment-modal-open');
+    };
+  }, []);
+
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
 
   const handlePayment = async () => {
     if (!userUpi) {
@@ -45,8 +59,8 @@ const PaymentGateway = ({ material, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="payment-overlay">
-      <div className="payment-modal">
+    <div className="payment-overlay" onClick={handleOverlayClick}>
+      <div className="payment-modal" onClick={e => e.stopPropagation()}>
         <button className="close-btn" onClick={onClose}>
           <X size={20} />
         </button>

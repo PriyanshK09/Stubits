@@ -4,23 +4,53 @@
   inset: 0;
   background: rgba(8, 5, 26, 0.95);
   backdrop-filter: blur(12px);
-  z-index: 9999;
+  z-index: 99999;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 2rem;
+  overflow-y: auto; /* Allow overlay to scroll if needed */
 }
 
 .payment-modal {
-  background: var(--surface-light);
-  border: 1px solid var(--purple-500);
+  background: rgba(17, 12, 34, 0.95);
+  border: 1px solid rgba(147, 51, 234, 0.2);
   border-radius: 24px;
-  padding: 2rem;
+  padding: 2.5rem;
   width: 90%;
   max-width: 500px;
   position: relative;
   animation: slideUp 0.3s ease;
-  margin-top: 2.5rem;
+  max-height: calc(100vh - 4rem); /* Account for padding */
+  overflow-y: auto; /* Enable scrolling within modal */
+  margin: auto; /* Center vertically when smaller than viewport */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(147, 51, 234, 0.3) rgba(17, 12, 34, 0.6);
+}
+
+/* Customize scrollbar */
+.payment-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.payment-modal::-webkit-scrollbar-track {
+  background: rgba(17, 12, 34, 0.6);
+  border-radius: 4px;
+}
+
+.payment-modal::-webkit-scrollbar-thumb {
+  background: rgba(147, 51, 234, 0.3);
+  border-radius: 4px;
+}
+
+.payment-modal::-webkit-scrollbar-thumb:hover {
+  background: rgba(147, 51, 234, 0.4);
+}
+
+/* Prevent background scrolling when modal is open */
+body.payment-modal-open {
+  overflow: hidden;
+  padding-right: 8px; /* Prevent layout shift when scrollbar disappears */
 }
 
 .close-btn {
