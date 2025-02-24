@@ -28,6 +28,11 @@ const UserDashboard = () => {
   };
 
   const handleScreenshotUpload = async (paymentId) => {
+    if (!uploadedFile) {
+      alert('Please select a file to upload');
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append('screenshot', uploadedFile);
@@ -45,10 +50,12 @@ const UserDashboard = () => {
         setUploadedFile(null);
         fetchPurchases(); // Refresh purchases
         alert('Screenshot uploaded successfully!');
+      } else {
+        throw new Error('Failed to upload screenshot');
       }
     } catch (error) {
       console.error('Error uploading screenshot:', error);
-      alert('Failed to upload screenshot');
+      alert('Failed to upload screenshot. Please try again.');
     }
   };
 
@@ -109,7 +116,9 @@ const UserDashboard = () => {
           <div className="speed-up-process">
             <button 
               className="speed-up-btn"
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 setSelectedPaymentId(purchase._id);
                 setShowUploadModal(true);
               }}
@@ -155,8 +164,8 @@ const UserDashboard = () => {
       )}
 
       {showUploadModal && (
-        <div className="screenshot-modal">
-          <div className="modal-content">
+        <div className="screenshot-modal" onClick={() => setShowUploadModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
             <h3>Upload Payment Screenshot</h3>
             <p>Please upload a clear screenshot of your payment</p>
             
