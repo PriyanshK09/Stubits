@@ -214,6 +214,15 @@ const Donation = () => {
                   />
                 </div>
               </div>
+              
+              <button 
+                type="submit" 
+                className="donate-btn"
+                disabled={!((selectedAmount || customAmount) && name && email && upiId)}
+              >
+                <Heart size={18} />
+                Complete Donation
+              </button>
             </form>
           </div>
 
